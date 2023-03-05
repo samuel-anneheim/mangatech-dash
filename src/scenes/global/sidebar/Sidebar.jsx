@@ -3,10 +3,10 @@ import { useState } from "react";
 import { Menu, Sidebar, MenuItem } from "react-pro-sidebar";
 import { useProSidebar } from "react-pro-sidebar";
 
-import { useSidebarContext } from "./sidebarContext";
+import { useSidebarContext } from "./SidebarContext";
 
 import { Link } from "react-router-dom";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import { useTheme, Box, Typography, IconButton } from "@mui/material";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -94,7 +94,7 @@ const MyProSidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  MANGATHEQUE
+                  MangaTech
                 </Typography>
                 <IconButton
                   onClick={
