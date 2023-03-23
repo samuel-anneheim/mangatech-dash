@@ -9,6 +9,7 @@ import {
   SecurityOutlined,
 } from "@mui/icons-material";
 import Header from "../../components/Header";
+import { Link } from "react-router-dom";
 
 const Team = () => {
   const theme = useTheme();
@@ -37,6 +38,17 @@ const Team = () => {
       field: "email",
       headerName: "Email",
       flex: 1,
+      renderCell: ({ row: {email}}) => { 
+        return(
+          <Box>
+            <Typography color={colors.grey[100]}>
+            <Link to={`mailto:${email}`} style={{color :colors.grey[100], textDecoration: "inherit"}} >
+                {email}
+              </Link>
+            </Typography>
+          </Box>
+        )
+      }
     },
     {
       field: "access",
@@ -85,7 +97,7 @@ const Team = () => {
           "& .name-column-cell": {
             color: colors.greenAccent[300],
           },
-          "& .MuiDataGrid-columHeaders": {
+          "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[700],
             borderBottom: "none",
           },
