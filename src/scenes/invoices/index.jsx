@@ -1,16 +1,15 @@
 import { Box, useTheme} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataContacts } from "../../data/mockData";
+import { mockDataInvoices } from "../../data/mockData";
 import Header from "../../components/Header";
 import EmailList from "../../components/EmailList";
 
-const Contacts = () => {
+const Invoices = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "registrarId", headerName: "Registrar Id" },
     {
       field: "name",
       headerName: "Name",
@@ -18,11 +17,12 @@ const Contacts = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "age",
-      headerName: "Age",
-      type: "number",
+      field: "date",
+      headerName: "Date",
+      type: "string",
       headerAlign: "left",
       align: "left",
+      flex: 1,
     },
     {
       field: "phone",
@@ -30,18 +30,8 @@ const Contacts = () => {
       flex: 1,
     },
     {
-      field: "address",
-      headerName: "Address",
-      flex: 1,
-    },
-    {
-      field: "city",
-      headerName: "City",
-      flex: 1,
-    },
-    {
-      field: "zipCode",
-      headerName: "Zip Code",
+      field: "cost",
+      headerName: "Cost",
       flex: 1,
     },
     {
@@ -88,10 +78,10 @@ const Contacts = () => {
           }
         }}
       >
-        <DataGrid rows={mockDataContacts} columns={columns} slots={{ toolbar: GridToolbar}} />
+        <DataGrid rows={mockDataInvoices} columns={columns} slots={{ toolbar: GridToolbar}} />
       </Box>
     </Box>
   );
 };
 
-export default Contacts;
+export default Invoices;

@@ -1,5 +1,5 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
 
@@ -10,6 +10,7 @@ import {
 } from "@mui/icons-material";
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
+import EmailList from "../../components/EmailList";
 
 const Team = () => {
   const theme = useTheme();
@@ -40,13 +41,7 @@ const Team = () => {
       flex: 1,
       renderCell: ({ row: {email}}) => { 
         return(
-          <Box>
-            <Typography color={colors.grey[100]}>
-            <Link to={`mailto:${email}`} style={{color :colors.grey[100], textDecoration: "inherit"}} >
-                {email}
-              </Link>
-            </Typography>
-          </Box>
+          <EmailList email={email}/>
         )
       }
     },
@@ -94,7 +89,7 @@ const Team = () => {
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
-          "& .name-column-cell": {
+          "& .name-column--cell": {
             color: colors.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
@@ -108,9 +103,12 @@ const Team = () => {
             borderTop: "none",
             backgroundColor: colors.blueAccent[700],
           },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${colors.grey[100]} !important`
+          }
         }}
       >
-        <DataGrid rows={mockDataTeam} columns={columns} />
+        <DataGrid rows={mockDataTeam} columns={columns} slots={{ toolbar: GridToolbar}}/>
       </Box>
     </Box>
   );
