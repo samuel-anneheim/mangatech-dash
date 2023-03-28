@@ -22,8 +22,7 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
-import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
+import { TagOutlined } from "@mui/icons-material";
 
 type Props = {
   title: string,
@@ -201,9 +200,9 @@ const MyProSidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Calendar"
-              to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
+              title="Tags"
+              to="/tags"
+              icon={<TagOutlined />}
               selected={selected}
               setSelected={setSelected}
             />
