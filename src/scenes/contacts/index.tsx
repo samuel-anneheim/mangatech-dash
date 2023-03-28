@@ -1,15 +1,28 @@
 import { Box, useTheme} from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataInvoices } from "../../data/mockData";
+import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
 import EmailList from "../../components/EmailList";
 
-const Invoices = () => {
+type RecordContacts = {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+  phone: string;
+  address: string;
+  city: string;
+  zipCode: string;
+  registrarId: number;
+}
+
+const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const columns = [
+  const columns: GridColDef<RecordContacts>[] = [
     { field: "id", headerName: "ID", flex: 0.5 },
+    { field: "registrarId", headerName: "Registrar Id" },
     {
       field: "name",
       headerName: "Name",
@@ -17,12 +30,11 @@ const Invoices = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "date",
-      headerName: "Date",
-      type: "string",
+      field: "age",
+      headerName: "Age",
+      type: "number",
       headerAlign: "left",
       align: "left",
-      flex: 1,
     },
     {
       field: "phone",
@@ -30,15 +42,25 @@ const Invoices = () => {
       flex: 1,
     },
     {
-      field: "cost",
-      headerName: "Cost",
+      field: "address",
+      headerName: "Address",
+      flex: 1,
+    },
+    {
+      field: "city",
+      headerName: "City",
+      flex: 1,
+    },
+    {
+      field: "zipCode",
+      headerName: "Zip Code",
       flex: 1,
     },
     {
       field: "email",
       headerName: "Email",
       flex: 1,
-      renderCell: ({ row: {email}}) => { 
+      renderCell: ({ row: {email}}:any) => { 
         return(
           <EmailList email={email}/>
         )
@@ -78,10 +100,10 @@ const Invoices = () => {
           }
         }}
       >
-        <DataGrid rows={mockDataInvoices} columns={columns} slots={{ toolbar: GridToolbar}} />
+        <DataGrid rows={mockDataContacts} columns={columns} slots={{ toolbar: GridToolbar}} />
       </Box>
     </Box>
   );
 };
 
-export default Invoices;
+export default Contacts;

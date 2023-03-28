@@ -6,7 +6,7 @@ import Dashboard from "./scenes/dashboard";
 import { MyProSidebarProvider } from "./scenes/global/sidebar/SidebarContext";
 import Team from "./scenes/team";
 import Contacts from "./scenes/contacts";
-import Invoices from "./scenes/Invoices";
+import Invoices from "./scenes/invoices";
 // import Bar from "./scenes/bar";
 // import Form from "./scenes/form";
 // import Line from "./scenes/line";

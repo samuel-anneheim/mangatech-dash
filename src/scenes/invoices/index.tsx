@@ -1,16 +1,24 @@
-import { Box, useTheme} from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Box, useTheme, Typography} from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataContacts } from "../../data/mockData";
+import { mockDataInvoices } from "../../data/mockData";
 import Header from "../../components/Header";
 import EmailList from "../../components/EmailList";
 
-const Contacts = () => {
+type RecordInvoices = {
+  id: number;
+  name: string;
+  email: string;
+  cost: string;
+  phone: string;
+  date: string;
+}
+
+const Invoices = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "registrarId", headerName: "Registrar Id" },
+  const columns: GridColDef<RecordInvoices>[] = [
+    { field: "id", headerName: "ID"},
     {
       field: "name",
       headerName: "Name",
@@ -18,37 +26,33 @@ const Contacts = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "age",
-      headerName: "Age",
-      type: "number",
+      field: "date",
+      headerName: "Date",
+      type: "string",
       headerAlign: "left",
       align: "left",
+      flex: 1,
     },
     {
       field: "phone",
-      headerName: "phone number",
+      headerName: "Phone number",
       flex: 1,
     },
     {
-      field: "address",
-      headerName: "Address",
+      field: "cost",
+      headerName: "Cost",
       flex: 1,
-    },
-    {
-      field: "city",
-      headerName: "City",
-      flex: 1,
-    },
-    {
-      field: "zipCode",
-      headerName: "Zip Code",
-      flex: 1,
+      renderCell: (params: any) => (
+        <Typography color={colors.greenAccent[500]}>
+          ${params.row.cost}
+        </Typography>
+      )
     },
     {
       field: "email",
       headerName: "Email",
       flex: 1,
-      renderCell: ({ row: {email}}) => { 
+      renderCell: ({ row: {email}}: any) => { 
         return(
           <EmailList email={email}/>
         )
@@ -58,7 +62,7 @@ const Contacts = () => {
 
   return (
     <Box m="20px">
-      <Header title="CONTACTS" subtitle="List of contacts for futur reference" />
+      <Header title="INVOICES" subtitle="List of invoice balances" />
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -83,15 +87,15 @@ const Contacts = () => {
             borderTop: "none",
             backgroundColor: colors.blueAccent[700],
           },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`
+          "& .MuiCheckbox-root": {
+            color: `${colors.greenAccent[200]} !important`
           }
         }}
       >
-        <DataGrid rows={mockDataContacts} columns={columns} slots={{ toolbar: GridToolbar}} />
+        <DataGrid rows={mockDataInvoices} columns={columns} checkboxSelection />
       </Box>
     </Box>
   );
 };
 
-export default Contacts;
+export default Invoices;

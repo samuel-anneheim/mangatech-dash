@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 
 const SidebarContext = createContext({});
 
-export const MyProSidebarProvider = ({ children }) => {
+export const MyProSidebarProvider = ({ children }: any) => {
   const [sidebarBackgroundColor, setSidebarBackgroundColor] =
     useState(undefined);
   const [sidebarImage, setSidebarImage] = useState(undefined);
@@ -33,4 +33,4 @@ export const MyProSidebarProvider = ({ children }) => {
   );
 };
 
-export const useSidebarContext = () => useContext(SidebarContext);
+export const useSidebarContext: any = () => useContext(SidebarContext);

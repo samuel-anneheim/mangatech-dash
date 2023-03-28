@@ -1,5 +1,5 @@
 // docs https://github.com/azouaoui-med/react-pro-sidebar
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { Menu, Sidebar, MenuItem } from "react-pro-sidebar";
 import { useProSidebar } from "react-pro-sidebar";
 
@@ -24,7 +24,16 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import SwitchRightOutlinedIcon from "@mui/icons-material/SwitchRightOutlined";
 import SwitchLeftOutlinedIcon from "@mui/icons-material/SwitchLeftOutlined";
-const Item = ({ title, to, icon, selected, setSelected }) => {
+
+type Props = {
+  title: string,
+  to: string,
+  icon: any,
+  selected: string,
+  setSelected: React.Dispatch<SetStateAction<string>>,
+};
+
+const Item = ({ title, to, icon, selected, setSelected }: Props) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -44,7 +53,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 const MyProSidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [selected, setSelected] = useState("Dashboard");
+  const [selected, setSelected] = useState<string>("Dashboard");
   const { sidebarImage } = useSidebarContext();
   const { collapseSidebar, toggleSidebar, collapsed, broken } = useProSidebar();
   return (
@@ -74,7 +83,7 @@ const MyProSidebar = () => {
         backgroundColor={colors.primary[400]}
         image={sidebarImage}
       >
-        <Menu iconshape="square">
+        <Menu>
           <MenuItem
             icon={
               collapsed ? (

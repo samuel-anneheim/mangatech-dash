@@ -1,7 +1,11 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../theme";
 
-const Header = ({ title, subtitle }) => {
+type Props = {
+  title: string;
+  subtitle: string;
+}
+const Header = ({ title, subtitle }: Props) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -14,7 +18,7 @@ const Header = ({ title, subtitle }) => {
       >
         {title}
       </Typography>
-      <Typography variant="h5" colors={colors.grey[400]}>
+      <Typography variant="h5" color={colors.grey[400]}>
         {subtitle}
       </Typography>
     </Box>
