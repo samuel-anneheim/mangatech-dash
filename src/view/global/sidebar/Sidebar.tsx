@@ -17,6 +17,7 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
+import CategoryIcon from '@mui/icons-material/Category';
 
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -25,11 +26,11 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { TagOutlined } from "@mui/icons-material";
 
 type Props = {
-  title: string,
-  to: string,
-  icon: any,
-  selected: string,
-  setSelected: React.Dispatch<SetStateAction<string>>,
+  title: string;
+  to: string;
+  icon: any;
+  selected: string;
+  setSelected: React.Dispatch<SetStateAction<string>>;
 };
 
 const Item = ({ title, to, icon, selected, setSelected }: Props) => {
@@ -86,7 +87,7 @@ const MyProSidebar = () => {
           <MenuItem
             icon={
               collapsed ? (
-                <MenuOutlinedIcon onClick={() => collapseSidebar()}/>
+                <MenuOutlinedIcon onClick={() => collapseSidebar()} />
               ) : undefined
             }
             style={{
@@ -164,9 +165,23 @@ const MyProSidebar = () => {
               Data
             </Typography>
             <Item
-              title="Manage Team"
-              to="/team"
+              title="Authors"
+              to="/author"
               icon={<PeopleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Tags"
+              to="/tag"
+              icon={<TagOutlined />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Category"
+              to="/category"
+              icon={<CategoryIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -196,13 +211,6 @@ const MyProSidebar = () => {
               title="Profile Form"
               to="/form"
               icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Tags"
-              to="/tags"
-              icon={<TagOutlined />}
               selected={selected}
               setSelected={setSelected}
             />

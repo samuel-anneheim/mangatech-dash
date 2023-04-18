@@ -148,7 +148,7 @@ export const themeSettings = (mode: PaletteMode): ThemeOptions => {
           }
         : {
             primary: {
-              main: colors.primary[100],
+              main: colors.primary[900],
             },
             secondary: {
               main: colors.greenAccent[500],
