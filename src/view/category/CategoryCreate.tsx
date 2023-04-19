@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import AlertCreate from "../../components/alert/AlertCreate";
 import { Box, Button, TextField } from "@mui/material";
 import CategoryValidation from "../../validation/category.validation";
+import functionHelper from "../../utils/functionHelper";
 
 const initialValues = {
   name: "",
@@ -16,11 +17,11 @@ const CategoryCreate = () => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
   const handleFormSubmit = async (values: any, resetForm: any) => {
+    values = functionHelper.setEmptyToUndefined(values);
     console.log(values);
-    (await CategoryService.create(values, setAlert)) === false
+    (await CategoryService.create(values)) === false
       ? setAlertError(true)
-      : resetForm({ initialValues }),
-      setAlert(true);
+      : (resetForm({ initialValues }), setAlert(true));
   };
 
   return (
@@ -71,7 +72,7 @@ const CategoryCreate = () => {
                 name="name"
                 error={!!touched.name && !!errors.name}
                 helperText={touched.name && errors.name}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 4" }}
               />
               <TextField
                 fullWidth
@@ -87,7 +88,7 @@ const CategoryCreate = () => {
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
-                fullWidth 
+                fullWidth
                 variant="filled"
                 type="text"
                 label="Description"

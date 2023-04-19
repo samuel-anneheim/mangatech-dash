@@ -15,9 +15,9 @@ const TagsCreate = () => {
   const [alertError, setAlertError] = useState(false);
   const handleFormSubmit = async (values: any, resetForm: any) => {
     console.log(values);
-    (await TagService.create(values, setAlert)) === false
-      ? setAlert(false)
-      : resetForm({ initialValues }),setAlertError(true);
+    (await TagService.create(values)) === false
+      ? setAlertError(true)
+      : (resetForm({ initialValues }), setAlert(true));
   };
 
   return (

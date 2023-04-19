@@ -14,12 +14,9 @@ class TagService {
       });
   };
 
-  public create = async (data: Tag, setAlert: any) => {
+  public create = async (data: Tag) => {
     return await client
       .post(`/tag`, data)
-      .then(() => {
-        setAlert(true);
-      })
       .catch((error) => {
         console.log(error);
         return false;

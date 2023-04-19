@@ -14,12 +14,9 @@ class CategoryService {
       });
   };
 
-  public create = async (data: Category, setAlert: any) => {
+  public create = async (data: Category) => {
     return await client
       .post(`/category`, data)
-      .then(() => {
-        setAlert(true);
-      })
       .catch((error) => {
         console.log(error);
         return false;

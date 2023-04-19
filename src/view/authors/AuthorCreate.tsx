@@ -13,6 +13,7 @@ import genderSelect from "../../utils/constant/genderSelect.const";
 import AuthorService from "../../api/services/Author.service";
 import AlertCreate from "../../components/alert/AlertCreate";
 import dayjs from "dayjs";
+import functionHelper from "../../utils/functionHelper";
 
 const initialValues = {
   name: "",
@@ -27,11 +28,11 @@ const AuthorCreate = () => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
   const handleFormSubmit = async (values: any, resetForm: any) => {
-    console.log(values);
-    values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
+    values = functionHelper.setEmptyToUndefined(values);
+    values.dateOfBirth ?? dayjs(values.dateOfBirth).format("YYYY-MM-DD");
     (await AuthorService.create(values, setAlert)) === false
       ? setAlertError(true)
-      : resetForm({ initialValues }), setAlert(true);
+      : (resetForm({ initialValues }), setAlert(true));
   };
 
   return (
