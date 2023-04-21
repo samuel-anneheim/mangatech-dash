@@ -3,9 +3,11 @@ import client from "../client";
 class EditionService {
   public list = async () => {
     return await client
-      .get(`/edition`)
+      .get(`/edition/collections`)
       .then((response) => {
         const data = response.data;
+        console.log(data);
+        
         return data;
       })
       .catch((error) => {

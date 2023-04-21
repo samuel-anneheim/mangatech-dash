@@ -3,6 +3,11 @@ import useEditionList from "../../hooks/edition/useEditionList"
 import Edition from "../../schema/edition.type";
 import EditionService from "../../api/services/Edition.service";
 import { GridColDef } from "@mui/x-data-grid";
+import ActionsBlock from "../../components/ActionsBlock";
+import { Box } from "@mui/material";
+import DeleteAlert from "../../components/alert/DeleteAlert";
+import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
+import ListView from "../../components/ListView";
 
 const EditionList = () => {
   const { data, loadData, setData } = useEditionList();
@@ -30,9 +35,59 @@ const EditionList = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "collection.name",
+      field: "collection",
       headerName: "Collection",
       flex: 1,
+      renderCell: ({ row }: any) => {
+        return <p>{row.collection?.title}</p>;
+      }
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: ({ row }: any) => {
+        return (
+          <ActionsBlock
+            id={row.id}
+            name={row.title}
+            route="collection"
+            setAlert={setAlertWarn}
+            setNameDelete={setNameDelete}
+            setIdDelete={setIdDelete}
+          />
+        );
+      },
     },
   ]
+
+  return (
+    <Box>
+      <DeleteAlert
+        collectionName="edition"
+        alertWarn={alertWarn}
+        setAlertWarn={setAlertWarn}
+        nameDelete={nameDelete}
+        idDelete={idDelete}
+        handleDelete={handleDelete}
+      />
+      <DeleteAlertSuccess
+        collectionName="edition"
+        name={nameDelete}
+        id={idDelete}
+        alert={successDelete}
+        setAlert={setSuccessDelete}
+      />
+      <ListView
+        data={data}
+        gridCol={EditionDataGrid}
+        loadData={loadData}
+        subtitle="List of editions"
+        route="edition"
+        title="Edition"
+      />
+    </Box>
+  );
 }
+
+export default EditionList;

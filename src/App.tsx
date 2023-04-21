@@ -17,6 +17,8 @@ import EditorList from "./view/editor/EditorList";
 import EditorCreate from "./view/editor/EditorCreate";
 import CollectionList from "./view/collection/CollectionList";
 import CollectionCreate from "./view/collection/CollectionCreate";
+import EditionList from "./view/edition/EditionList";
+import EditionCreate from "./view/edition/EditionCreate";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -37,6 +39,9 @@ function App() {
 
                   <Route path="editor" element={<EditorList />} />
                   <Route path="editor/create" element={<EditorCreate />} />
+
+                  <Route path="edition" element={<EditionList />} />
+                  <Route path="edition/create" element={<EditionCreate />} />
 
                   <Route path="collection" element={<CollectionList />}/>
                   <Route path="collection/create" element={<CollectionCreate />}/>

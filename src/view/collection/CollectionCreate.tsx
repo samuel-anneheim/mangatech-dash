@@ -167,10 +167,25 @@ const CollectionCreate = () => {
                 onChange={handleChange}
                 value={values.image}
                 name="image"
+                InputProps={{
+                
+                }}
                 error={!!touched.image && !!errors.image}
                 helperText={touched.image && errors.image}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ 
+                  gridColumn: "span 4", 
+                  ".MuiOutlinedInput-root": {
+                    paddingTop: "1rem",
+                    flexDirection: "column"
+                  },
+                  img: {paddingTop: "1rem",}
+                }}
               />
+              {values.image && (
+                <Box display="flex" justifyContent="center" sx={{ gridColumn: "span 4" }}>
+                  <img src={values.image} alt="preview" width="auto" height="200px" />
+                </Box>
+              )}
               <TextField
                 fullWidth
                 variant="filled"
@@ -281,7 +296,7 @@ const CollectionCreate = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create new category
+                Create new collection
               </Button>
             </Box>
           </form>

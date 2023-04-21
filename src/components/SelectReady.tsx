@@ -25,6 +25,18 @@ const SelectReady = ({
   routeName,
   fieldName,
 }: Props) => {
+
+  const stringRetuned = (el: any, name: string) => {
+    if (name === "Author") {
+      return `${el.name}  ${el?.surname}`;
+    }
+    if (name === "Collection") {
+      return el.title;
+    }else {
+      return el.name;
+    }
+  }
+
   return (
     <FormControl variant="filled" fullWidth sx={{ gridColumn: "span 2" }}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -38,10 +50,10 @@ const SelectReady = ({
             onBlur={handleBlur}
             error={!!touched[fieldName] && !!errors[fieldName]}
           >
-            <MenuItem value="0" sx={{height: "24px"}}></MenuItem>
+            <MenuItem value="0" sx={{ height: "24px" }}></MenuItem>
             {data.map((el: any) => (
               <MenuItem key={el.id} value={el.id}>
-                {name === "Author" ? `${el.name}   ${el?.surname}` : el.name}
+                {stringRetuned(el, name)}
               </MenuItem>
             ))}
           </Select>
