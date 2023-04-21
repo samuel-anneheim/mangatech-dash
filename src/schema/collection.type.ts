@@ -18,7 +18,6 @@ type Collection = {
   author?: Author;
   category?: Category;
   editor?: Editor;
-  editions?: Edition[];
   tags?: Tags[];
   authorId: number;
   categoryId: number;

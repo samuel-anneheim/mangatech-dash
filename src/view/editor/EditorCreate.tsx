@@ -1,25 +1,26 @@
 import { useState } from "react";
-import CategoryService from "../../api/services/Category.service";
-import { Formik } from "formik";
-import Header from "../../components/Header";
-import AlertCreate from "../../components/alert/AlertCreate";
-import { Box, Button, TextField } from "@mui/material";
-import CategoryValidation from "../../validation/category.validation";
 import functionHelper from "../../utils/functionHelper";
+import EditorService from "../../api/services/Editor.service";
+import { Box, Button, TextField } from "@mui/material";
+import AlertCreate from "../../components/alert/AlertCreate";
+import Header from "../../components/Header";
+import { Formik } from "formik";
+import EditorValidation from "../../validation/editor.validation";
 
 const initialValues = {
   name: "",
+  logo: "",
   description: "",
-  image: "",
+  officialWebsite: "",
 };
 
-const CategoryCreate = () => {
+const EditorCreate = () => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
     console.log(values);
-    (await CategoryService.create(values)) === false
+    (await EditorService.create(values)) === false
       ? setAlertError(true)
       : (resetForm({ initialValues }), setAlert(true));
   };
@@ -29,22 +30,22 @@ const CategoryCreate = () => {
       <AlertCreate
         alert={alert}
         setAlert={setAlert}
-        text="Category created succefully"
+        text="Editor created succefully"
         severity="success"
       />
       <AlertCreate
         alert={alertError}
         setAlert={setAlertError}
-        text="Category not created"
+        text="Editor not created"
         severity="error"
       />
-      <Header title="CREATE CATEGORY" subtitle="Create a new category" />
+      <Header title="CREATE EDITOR" subtitle="Create a new editor" />
       <Formik
         onSubmit={(values, { resetForm }) => {
           handleFormSubmit(values, resetForm);
         }}
         initialValues={initialValues}
-        validationSchema={CategoryValidation}
+        validationSchema={EditorValidation}
       >
         {({
           values,
@@ -75,15 +76,15 @@ const CategoryCreate = () => {
               />
               <TextField
                 fullWidth
-                variant="filled"
+                variant="filled" 
                 type="text"
-                label="Image"
+                label="Logo"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.image}
-                name="image"
-                error={!!touched.image && !!errors.image}
-                helperText={touched.image && errors.image}
+                value={values.logo}
+                name="logo"
+                error={!!touched.logo && !!errors.logo}
+                helperText={touched.logo && errors.logo}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -99,10 +100,23 @@ const CategoryCreate = () => {
                 helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
               />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Official Website"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.officialWebsite}
+                name="officialWebsite"
+                error={!!touched.officialWebsite && !!errors.officialWebsite}
+                helperText={touched.officialWebsite && errors.officialWebsite}
+                sx={{ gridColumn: "span 4" }}
+              />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create new category
+                Create new editor
               </Button>
             </Box>
           </form>
@@ -112,4 +126,4 @@ const CategoryCreate = () => {
   );
 };
 
-export default CategoryCreate;
+export default EditorCreate;

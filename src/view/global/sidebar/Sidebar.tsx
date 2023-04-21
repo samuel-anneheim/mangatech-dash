@@ -9,20 +9,16 @@ import { Link } from "react-router-dom";
 import { tokens } from "../../../theme";
 import { useTheme, Box, Typography, IconButton } from "@mui/material";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import CategoryIcon from '@mui/icons-material/Category';
+import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
+import CategoryIcon from "@mui/icons-material/Category";
+import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
+import CollectionsOutlinedIcon from "@mui/icons-material/CollectionsOutlined";
+import AutoAwesomeMotionOutlinedIcon from '@mui/icons-material/AutoAwesomeMotionOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { TagOutlined } from "@mui/icons-material";
 
 type Props = {
@@ -121,18 +117,14 @@ const MyProSidebar = () => {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                sx={{
-                  "& .avater-image": {
-                    backgroundColor: colors.primary[500],
-                  },
-                }}
+                
               >
                 <img
                   className="avater-image"
                   alt="profile user"
-                  width="100px"
-                  height="100px"
-                  src={"../../assets/user.png"}
+                  width="130px"
+                  height="130px"
+                  src={"../../assets/logo.png"}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
@@ -167,7 +159,42 @@ const MyProSidebar = () => {
             <Item
               title="Authors"
               to="/author"
-              icon={<PeopleOutlinedIcon />}
+              icon={<BorderColorOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Category"
+              to="/category"
+              icon={<CategoryIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Collection"
+              to="/collection"
+              icon={<CollectionsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Editon"
+              to="/edition"
+              icon={<AutoAwesomeMotionOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Editor"
+              to="/editor"
+              icon={<BuildOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Library"
+              to="/lirabry"
+              icon={<CollectionsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -179,9 +206,16 @@ const MyProSidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Category"
-              to="/category"
-              icon={<CategoryIcon />}
+              title="User"
+              to="/user"
+              icon={<GroupOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Volume"
+              to="/volume"
+              icon={<MenuBookOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />

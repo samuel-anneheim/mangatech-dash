@@ -29,7 +29,9 @@ const AuthorCreate = () => {
   const [alertError, setAlertError] = useState(false);
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
-    values.dateOfBirth ?? dayjs(values.dateOfBirth).format("YYYY-MM-DD");
+    if (values.dateOfBirth ) {
+      values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
+    }
     (await AuthorService.create(values, setAlert)) === false
       ? setAlertError(true)
       : (resetForm({ initialValues }), setAlert(true));

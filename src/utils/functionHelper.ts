@@ -3,7 +3,7 @@ class FunctionHelper {
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
         const element = obj[key];
-        if (element === "") {
+        if (element === "" || element === null || element === 0) {
           obj[key] = undefined;
         }
       }

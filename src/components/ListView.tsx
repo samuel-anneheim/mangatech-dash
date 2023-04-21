@@ -42,7 +42,7 @@ const ListView = ({data, loadData, gridCol, title, subtitle, route}: Props) => {
           </Button>
         </Box>
       </Box>
-      <Box m="20px 0 0 0" height="75vh" sx={overloadStyleDatagrid(colors)}>
+      <Box m="20px 0 0 0" width="100%" height="75vh" sx={overloadStyleDatagrid(colors)}>
         <DataGrid
           rows={data}
           columns={gridCol}

@@ -13,6 +13,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CategoryList from "./view/category/CategoryList";
 import CategoryCreate from "./view/category/CategoryCreate";
+import EditorList from "./view/editor/EditorList";
+import EditorCreate from "./view/editor/EditorCreate";
+import CollectionList from "./view/collection/CollectionList";
+import CollectionCreate from "./view/collection/CollectionCreate";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -30,6 +34,12 @@ function App() {
 
                   <Route path="author" element={<AuthorList />} />
                   <Route path="author/create" element={<AuthorCreate />} />
+
+                  <Route path="editor" element={<EditorList />} />
+                  <Route path="editor/create" element={<EditorCreate />} />
+
+                  <Route path="collection" element={<CollectionList />}/>
+                  <Route path="collection/create" element={<CollectionCreate />}/>
 
                   <Route path="category" element={<CategoryList />} />
                   <Route path="category/create" element={<CategoryCreate />} />

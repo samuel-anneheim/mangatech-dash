@@ -20,9 +20,9 @@ const Topbar = () => {
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
-      {/* SEARCH BAR */}
+      {/* @TODO : SEARCH BAR */}
       <Box display="flex">
-        {broken && (
+        {/* {broken && (
           <IconButton
             sx={{ margin: "0 6 0 2" }}
             onClick={() => toggleSidebar()}
@@ -39,7 +39,7 @@ const Topbar = () => {
         <IconButton type="button" sx={{ p: 1 }}>
           <SearchIcon />
         </IconButton>
-        </Box>
+        </Box> */}
       </Box>
 
       {/* ICONS */}

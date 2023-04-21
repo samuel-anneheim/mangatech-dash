@@ -8,6 +8,7 @@ type Editor = {
   officialWebsite: string;
   collections: Collection[];
   slug: string;
+  countCollections: number;
 }
 
 export default Editor;
