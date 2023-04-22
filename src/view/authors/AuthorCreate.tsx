@@ -22,14 +22,20 @@ const initialValues = {
 const AuthorCreate = () => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
+  const [image, setImage] = useState("#");
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
+    values.image = image ? image : undefined;
     if (values.dateOfBirth) {
       values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
     }
     (await AuthorService.create(values, setAlert)) === false
       ? setAlertError(true)
       : (resetForm({ initialValues }), setAlert(true));
+  };
+
+  const handleUploadImage = (event: any) => {
+    functionHelper.uploadImage(event, setImage);
   };
 
   return (
@@ -95,33 +101,40 @@ const AuthorCreate = () => {
                 helperText={touched.surname && errors.surname}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Image"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.image}
-                name="image"
-                error={!!touched.image && !!errors.image}
-                helperText={touched.image && errors.image}
-                sx={{ gridColumn: "span 4" }}
-              />
-              {values.image && (
+              <label htmlFor="image">
+                <input
+                  style={{ display: "none" }}
+                  id="image"
+                  name="image"
+                  type="file"
+                  onChange={handleUploadImage}
+                />
+                <Button color="secondary" variant="contained" component="span">
+                  Upload image
+                </Button>
+              </label>
+              {image !== "#" && (
                 <Box
                   display="flex"
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
-                  <img
-                    src={values.image}
-                    alt="preview"
-                    width="auto"
-                    height="200px"
-                  />
+                  <img src={image} alt="preview" width="auto" height="200px" />
                 </Box>
               )}
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Biography"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.biography}
+                name="biography"
+                error={!!touched.biography && !!errors.biography}
+                helperText={touched.biography && errors.biography}
+                sx={{ gridColumn: "span 4" }}
+              />
               <TextField
                 fullWidth
                 select
@@ -158,19 +171,6 @@ const AuthorCreate = () => {
                     helperText: touched.dateOfBirth && errors.dateOfBirth,
                   },
                 }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Biography"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.biography}
-                name="biography"
-                error={!!touched.biography && !!errors.biography}
-                helperText={touched.biography && errors.biography}
-                sx={{ gridColumn: "span 4" }}
               />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">

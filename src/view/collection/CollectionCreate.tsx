@@ -67,6 +67,7 @@ const MenuProps = {
 const CollectionCreate = () => {
   const [alert, setAlert] = useState<boolean>(false);
   const [alertError, setAlertError] = useState<boolean>(false);
+  const [image, setImage] = useState<string>("#");
   const [editor, setEditor] = useState<Editor[]>([]);
   const [category, setCategory] = useState<Category[]>([]);
   const [author, setAuthor] = useState<Author[]>([]);
@@ -81,15 +82,19 @@ const CollectionCreate = () => {
 
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
+    values.image = image ? image : undefined;
     if (values.releaseDate) {
       values.releaseDate = dayjs(values.releaseDate).format("YYYY-MM-DD");
     }
-    console.log(values);
-
     (await CollectionService.create(values)) === false
       ? setAlertError(true)
       : (resetForm({ initialValues }), setAlert(true));
   };
+
+  const handleUploadImage = (event: any) => {
+    functionHelper.uploadImage(event, setImage);
+  };
+
 
   return (
     <Box m="20px">
@@ -158,22 +163,25 @@ const CollectionCreate = () => {
                   },
                 }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Image"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.image}
-                name="image"
-                error={!!touched.image && !!errors.image}
-                helperText={touched.image && errors.image}
-                sx={{ gridColumn: "span 4" }}
-              />
-              {values.image && (
-                <Box display="flex" justifyContent="center" sx={{ gridColumn: "span 4" }}>
-                  <img src={values.image} alt="preview" width="auto" height="200px" />
+              <label htmlFor="image">
+                <input
+                  style={{ display: "none" }}
+                  id="image"
+                  name="image"
+                  type="file"
+                  onChange={handleUploadImage}
+                />
+                <Button color="secondary" variant="contained" component="span">
+                  Upload image
+                </Button>
+              </label>
+              {image !== "#" && (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  sx={{ gridColumn: "span 4" }}
+                >
+                  <img src={image} alt="preview" width="auto" height="200px" />
                 </Box>
               )}
               <TextField
@@ -189,38 +197,38 @@ const CollectionCreate = () => {
                 helperText={touched.resume && errors.resume}
                 sx={{ gridColumn: "span 4" }}
               />
-              <SelectReady 
-                  data={author}
-                  fieldName={"authorId"}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                  values={values}
-                  touched={touched}
-                  errors={errors}
-                  name={"Author"}
-                  routeName={"author"}
+              <SelectReady
+                data={author}
+                fieldName={"authorId"}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                values={values}
+                touched={touched}
+                errors={errors}
+                name={"Author"}
+                routeName={"author"}
               />
               <SelectReady
-                  data={editor}
-                  fieldName={"editorId"}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                  values={values}
-                  touched={touched}
-                  errors={errors}
-                  name={"Editor"}
-                  routeName={"editor"}
+                data={editor}
+                fieldName={"editorId"}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                values={values}
+                touched={touched}
+                errors={errors}
+                name={"Editor"}
+                routeName={"editor"}
               />
               <SelectReady
-                  data={category}
-                  fieldName={"categoryId"}
-                  handleChange={handleChange}
-                  handleBlur={handleBlur}
-                  values={values}
-                  touched={touched}
-                  errors={errors}
-                  name={"Category"}
-                  routeName={"category"}
+                data={category}
+                fieldName={"categoryId"}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                values={values}
+                touched={touched}
+                errors={errors}
+                name={"Category"}
+                routeName={"category"}
               />
               <FormControl
                 variant="filled"

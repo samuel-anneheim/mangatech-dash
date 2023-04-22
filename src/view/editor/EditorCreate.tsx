@@ -6,6 +6,7 @@ import AlertCreate from "../../components/alert/AlertCreate";
 import Header from "../../components/Header";
 import { Formik } from "formik";
 import EditorValidation from "../../validation/editor.validation";
+import ImageService from "../../api/services/Image.service";
 
 const initialValues = {
   name: "",
@@ -17,13 +18,19 @@ const initialValues = {
 const EditorCreate = () => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
+  const [logo, setLogo] = useState("#");
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
-    console.log(values);
+    values.logo = logo ? logo : undefined;
     (await EditorService.create(values)) === false
       ? setAlertError(true)
-      : (resetForm({ initialValues }), setAlert(true));
+      : (resetForm({ initialValues }), setAlert(true), setLogo("#"));
   };
+
+  const handleUploadLogo = (event: any) => {
+    functionHelper.uploadImage(event, setLogo);
+  };
+
 
   return (
     <Box m="20px">
@@ -74,27 +81,26 @@ const EditorCreate = () => {
                 helperText={touched.name && errors.name}
                 sx={{ gridColumn: "span 4" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Logo"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.logo}
-                name="logo"
-                error={!!touched.logo && !!errors.logo}
-                helperText={touched.logo && errors.logo}
-                sx={{ gridColumn: "span 4" }}
-              />
-              {values.logo && (
+              <label htmlFor="logo">
+                <input
+                  style={{ display: "none" }}
+                  id="logo"
+                  name="logo"
+                  type="file"
+                  onChange={handleUploadLogo}
+                />
+                <Button color="secondary" variant="contained" component="span">
+                  Upload Logo
+                </Button>
+              </label>
+              {logo !== "#" && (
                 <Box
                   display="flex"
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
                   <img
-                    src={values.logo}
+                    src={logo}
                     alt="preview"
                     width="auto"
                     height="200px"

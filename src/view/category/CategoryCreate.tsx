@@ -16,12 +16,18 @@ const initialValues = {
 const CategoryCreate = () => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
+  const [image, setImage] = useState("#");
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
+    values.image = image ? image : undefined;
     console.log(values);
     (await CategoryService.create(values)) === false
       ? setAlertError(true)
       : (resetForm({ initialValues }), setAlert(true));
+  };
+
+  const handleUploadImage = (event: any) => {
+    functionHelper.uploadImage(event, setImage);
   };
 
   return (
@@ -73,27 +79,26 @@ const CategoryCreate = () => {
                 helperText={touched.name && errors.name}
                 sx={{ gridColumn: "span 4" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Image"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.image}
-                name="image"
-                error={!!touched.image && !!errors.image}
-                helperText={touched.image && errors.image}
-                sx={{ gridColumn: "span 4" }}
-              />
-              {values.image && (
+              <label htmlFor="image">
+                <input
+                  style={{ display: "none" }}
+                  id="image"
+                  name="image"
+                  type="file"
+                  onChange={handleUploadImage}
+                />
+                <Button color="secondary" variant="contained" component="span">
+                  Upload image
+                </Button>
+              </label>
+              {image !== "#" && (
                 <Box
                   display="flex"
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
                   <img
-                    src={values.image}
+                    src={image}
                     alt="preview"
                     width="auto"
                     height="200px"
