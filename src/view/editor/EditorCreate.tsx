@@ -76,7 +76,7 @@ const EditorCreate = () => {
               />
               <TextField
                 fullWidth
-                variant="filled" 
+                variant="filled"
                 type="text"
                 label="Logo"
                 onBlur={handleBlur}
@@ -87,6 +87,20 @@ const EditorCreate = () => {
                 helperText={touched.logo && errors.logo}
                 sx={{ gridColumn: "span 4" }}
               />
+              {values.logo && (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  sx={{ gridColumn: "span 4" }}
+                >
+                  <img
+                    src={values.logo}
+                    alt="preview"
+                    width="auto"
+                    height="200px"
+                  />
+                </Box>
+              )}
               <TextField
                 fullWidth
                 variant="filled"

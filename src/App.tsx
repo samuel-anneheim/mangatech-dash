@@ -19,6 +19,7 @@ import CollectionList from "./view/collection/CollectionList";
 import CollectionCreate from "./view/collection/CollectionCreate";
 import EditionList from "./view/edition/EditionList";
 import EditionCreate from "./view/edition/EditionCreate";
+import NotFound from "./view/global/NotFound";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -52,6 +53,8 @@ function App() {
                   <Route path="tag" element={<TagList />} />
                   <Route path="tag/create" element={<TagsCreate />} />
                   <Route path="tag/:id" element={<TagView />} />
+
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
             </div>

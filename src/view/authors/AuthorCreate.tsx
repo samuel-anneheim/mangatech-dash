@@ -1,9 +1,4 @@
-import {
-  Box,
-  Button,
-  MenuItem,
-  TextField,
-} from "@mui/material";
+import { Box, Button, MenuItem, TextField } from "@mui/material";
 import { Formik } from "formik";
 import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -29,7 +24,7 @@ const AuthorCreate = () => {
   const [alertError, setAlertError] = useState(false);
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
-    if (values.dateOfBirth ) {
+    if (values.dateOfBirth) {
       values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
     }
     (await AuthorService.create(values, setAlert)) === false
@@ -113,6 +108,20 @@ const AuthorCreate = () => {
                 helperText={touched.image && errors.image}
                 sx={{ gridColumn: "span 4" }}
               />
+              {values.image && (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  sx={{ gridColumn: "span 4" }}
+                >
+                  <img
+                    src={values.image}
+                    alt="preview"
+                    width="auto"
+                    height="200px"
+                  />
+                </Box>
+              )}
               <TextField
                 fullWidth
                 select

@@ -86,6 +86,20 @@ const CategoryCreate = () => {
                 helperText={touched.image && errors.image}
                 sx={{ gridColumn: "span 4" }}
               />
+              {values.image && (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  sx={{ gridColumn: "span 4" }}
+                >
+                  <img
+                    src={values.image}
+                    alt="preview"
+                    width="auto"
+                    height="200px"
+                  />
+                </Box>
+              )}
               <TextField
                 fullWidth
                 variant="filled"

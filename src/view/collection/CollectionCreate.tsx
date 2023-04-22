@@ -167,19 +167,9 @@ const CollectionCreate = () => {
                 onChange={handleChange}
                 value={values.image}
                 name="image"
-                InputProps={{
-                
-                }}
                 error={!!touched.image && !!errors.image}
                 helperText={touched.image && errors.image}
-                sx={{ 
-                  gridColumn: "span 4", 
-                  ".MuiOutlinedInput-root": {
-                    paddingTop: "1rem",
-                    flexDirection: "column"
-                  },
-                  img: {paddingTop: "1rem",}
-                }}
+                sx={{ gridColumn: "span 4" }}
               />
               {values.image && (
                 <Box display="flex" justifyContent="center" sx={{ gridColumn: "span 4" }}>
