@@ -3,20 +3,16 @@ import CollectionService from "../../api/services/Collection.Service";
 import functionHelper from "../../utils/functionHelper";
 import AlertCreate from "../../components/alert/AlertCreate";
 import {
-  Autocomplete,
   Box,
   Button,
   FormControl,
   FormGroup,
   InputLabel,
-  NativeSelect,
   Select,
   Switch,
   TextField,
   MenuItem,
-  OutlinedInput,
   Chip,
-  Fab,
 } from "@mui/material";
 import Header from "../../components/Header";
 import { Formik } from "formik";
@@ -31,12 +27,9 @@ import Category from "../../schema/category.type";
 import Author from "../../schema/author.type";
 import Tag from "../../schema/tag.type";
 import TagService from "../../api/services/Tag.service";
-import Collection from "../../schema/collection.type";
-import { Link } from "react-router-dom";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import SelectReady from "../../components/SelectReady";
 
-//Valeur initiale du formulaire de création de collection grace au type Collection
 const initialValues = {
   title: "",
   image: "",
@@ -82,6 +75,7 @@ const CollectionCreate = () => {
 
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
+    values.image = image === "#" ? undefined : image;
     values.image = image ? image : undefined;
     if (values.releaseDate) {
       values.releaseDate = dayjs(values.releaseDate).format("YYYY-MM-DD");
@@ -94,7 +88,6 @@ const CollectionCreate = () => {
   const handleUploadImage = (event: any) => {
     functionHelper.uploadImage(event, setImage);
   };
-
 
   return (
     <Box m="20px">
@@ -181,6 +174,7 @@ const CollectionCreate = () => {
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
+                  <CancelOutlinedIcon onClick={() => setImage("#")} />
                   <img src={image} alt="preview" width="auto" height="200px" />
                 </Box>
               )}

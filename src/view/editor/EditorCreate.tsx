@@ -6,7 +6,7 @@ import AlertCreate from "../../components/alert/AlertCreate";
 import Header from "../../components/Header";
 import { Formik } from "formik";
 import EditorValidation from "../../validation/editor.validation";
-import ImageService from "../../api/services/Image.service";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 const initialValues = {
   name: "",
@@ -21,6 +21,7 @@ const EditorCreate = () => {
   const [logo, setLogo] = useState("#");
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
+    values.logo = logo === "#" ? undefined : logo;
     values.logo = logo ? logo : undefined;
     (await EditorService.create(values)) === false
       ? setAlertError(true)
@@ -30,7 +31,6 @@ const EditorCreate = () => {
   const handleUploadLogo = (event: any) => {
     functionHelper.uploadImage(event, setLogo);
   };
-
 
   return (
     <Box m="20px">
@@ -99,12 +99,8 @@ const EditorCreate = () => {
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
-                  <img
-                    src={logo}
-                    alt="preview"
-                    width="auto"
-                    height="200px"
-                  />
+                  <CancelOutlinedIcon onClick={() => setLogo("#")} />
+                  <img src={logo} alt="preview" width="auto" height="200px" />
                 </Box>
               )}
               <TextField

@@ -6,6 +6,7 @@ import AlertCreate from "../../components/alert/AlertCreate";
 import { Box, Button, TextField } from "@mui/material";
 import CategoryValidation from "../../validation/category.validation";
 import functionHelper from "../../utils/functionHelper";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 const initialValues = {
   name: "",
@@ -19,6 +20,7 @@ const CategoryCreate = () => {
   const [image, setImage] = useState("#");
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
+    values.image = image === "#" ? undefined : image;
     values.image = image ? image : undefined;
     console.log(values);
     (await CategoryService.create(values)) === false
@@ -97,12 +99,8 @@ const CategoryCreate = () => {
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
-                  <img
-                    src={image}
-                    alt="preview"
-                    width="auto"
-                    height="200px"
-                  />
+                  <CancelOutlinedIcon onClick={() => setImage("#")} />
+                  <img src={image} alt="preview" width="auto" height="200px" />
                 </Box>
               )}
               <TextField

@@ -9,6 +9,7 @@ import AuthorService from "../../api/services/Author.service";
 import AlertCreate from "../../components/alert/AlertCreate";
 import dayjs from "dayjs";
 import functionHelper from "../../utils/functionHelper";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 const initialValues = {
   name: "",
@@ -25,6 +26,7 @@ const AuthorCreate = () => {
   const [image, setImage] = useState("#");
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
+    values.image = image === "#" ? undefined : image;
     values.image = image ? image : undefined;
     if (values.dateOfBirth) {
       values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
@@ -119,6 +121,7 @@ const AuthorCreate = () => {
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
+                  <CancelOutlinedIcon onClick={() => setImage("#")} />
                   <img src={image} alt="preview" width="auto" height="200px" />
                 </Box>
               )}
