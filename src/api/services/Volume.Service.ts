@@ -1,10 +1,10 @@
 import Author from "../../schema/author.type";
 import client from "../client";
 
-class AuthorService {
+class VolumeService {
   public list = async () => {
     return await client
-      .get(`/author`)
+      .get(`/volume/allData`)
       .then((response) => {
         const data = response.data;
         return data;
@@ -16,7 +16,7 @@ class AuthorService {
 
   public create = async (data: Author, setAlert: any) => {
     return await client
-      .post(`/author`, data)
+      .post(`/volume`, data)
       .then(() => {
         setAlert(true);
       })
@@ -27,10 +27,10 @@ class AuthorService {
   };
 
   public delete = async (id: number) => {
-    return await client.delete(`/author/${id}`).catch((error) => {
+    return await client.delete(`/volume/${id}`).catch((error) => {
       console.log(error);
     });
   };
 }
 
-export default new AuthorService();
+export default new VolumeService();

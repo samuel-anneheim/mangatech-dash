@@ -20,6 +20,8 @@ import CollectionCreate from "./view/collection/CollectionCreate";
 import EditionList from "./view/edition/EditionList";
 import EditionCreate from "./view/edition/EditionCreate";
 import NotFound from "./view/global/NotFound";
+import VolumeList from "./view/volume/VolumeList";
+import VolumeCreate from "./view/volume/VolumeCreate";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -38,21 +40,24 @@ function App() {
                   <Route path="author" element={<AuthorList />} />
                   <Route path="author/create" element={<AuthorCreate />} />
 
-                  <Route path="editor" element={<EditorList />} />
-                  <Route path="editor/create" element={<EditorCreate />} />
-
-                  <Route path="edition" element={<EditionList />} />
-                  <Route path="edition/create" element={<EditionCreate />} />
+                  <Route path="category" element={<CategoryList />} />
+                  <Route path="category/create" element={<CategoryCreate />} />
 
                   <Route path="collection" element={<CollectionList />}/>
                   <Route path="collection/create" element={<CollectionCreate />}/>
 
-                  <Route path="category" element={<CategoryList />} />
-                  <Route path="category/create" element={<CategoryCreate />} />
+                  <Route path="edition" element={<EditionList />} />
+                  <Route path="edition/create" element={<EditionCreate />} />
+
+                  <Route path="editor" element={<EditorList />} />
+                  <Route path="editor/create" element={<EditorCreate />} />
 
                   <Route path="tag" element={<TagList />} />
                   <Route path="tag/create" element={<TagsCreate />} />
                   <Route path="tag/:id" element={<TagView />} />
+
+                  <Route path="volume" element={<VolumeList />} />
+                  <Route path="volume/create" element={<VolumeCreate />} />
 
                   <Route path="*" element={<NotFound />} />
                 </Routes>

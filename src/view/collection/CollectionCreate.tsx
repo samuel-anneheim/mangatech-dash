@@ -32,7 +32,7 @@ import SelectReady from "../../components/SelectReady";
 
 const initialValues = {
   title: "",
-  image: "",
+  image: "#",
   releaseDate: "",
   resume: "",
   isFinish: false,

@@ -15,7 +15,7 @@ const initialValues = {
   name: "",
   surname: "",
   gender: "",
-  image: "",
+  image: "#",
   biography: "",
   dateOfBirth: "",
 };
@@ -26,8 +26,9 @@ const AuthorCreate = () => {
   const [image, setImage] = useState("#");
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
+    console.log(values);
     values.image = image === "#" ? undefined : image;
-    values.image = image ? image : undefined;
+    console.log(values);
     if (values.dateOfBirth) {
       values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
     }

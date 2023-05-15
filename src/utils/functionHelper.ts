@@ -3,6 +3,7 @@ import ImageService from "../api/services/Image.service";
 class FunctionHelper {
   public setEmptyToUndefined = (obj: any) => {
     for (const key in obj) {
+      if (key === "nbrPages") continue;
       if (obj.hasOwnProperty(key)) {
         const element = obj[key];
         if (element === "" || element === null || element === 0) {

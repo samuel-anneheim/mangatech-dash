@@ -22,7 +22,6 @@ const EditorCreate = () => {
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
     values.logo = logo === "#" ? undefined : logo;
-    values.logo = logo ? logo : undefined;
     (await EditorService.create(values)) === false
       ? setAlertError(true)
       : (resetForm({ initialValues }), setAlert(true), setLogo("#"));

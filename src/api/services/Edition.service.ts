@@ -7,7 +7,25 @@ class EditionService {
       .then((response) => {
         const data = response.data;
         console.log(data);
-        
+
+        return data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  public get = async (id: number) => {
+    return await client.get(`/edition/${id}`).catch((error) => {
+      console.log(error);
+    });
+  };
+
+  public getWhereCollectionId = async (id: number) => {
+    return await client
+      .get(`/edition/collectionId/${id}`)
+      .then((response) => {
+        const data = response.data;
         return data;
       })
       .catch((error) => {

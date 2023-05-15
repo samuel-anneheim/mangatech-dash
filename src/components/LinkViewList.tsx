@@ -3,21 +3,23 @@ import { Link } from "react-router-dom";
 import { tokens } from "../theme";
 
 type Props = {
-  email: string;
+  route: string,
+  value: string;
+  id: number;
 };
 
-const EmailList = ({ email }: Props) => {
+const LinkViewList = ({ value, route, id }: Props) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
     <Box>
     <Typography color={colors.grey[100]}>
-    <Link to={`mailto:${email}`} style={{color :colors.grey[100], textDecoration: "inherit"}} >
-        {email}
+    <Link to={`/${route}/${id}`} style={{color :colors.grey[100], textDecoration: "inherit"}} >
+        {value}
       </Link>
     </Typography>
   </Box>
   );
 };
 
-export default EmailList;
+export default LinkViewList;

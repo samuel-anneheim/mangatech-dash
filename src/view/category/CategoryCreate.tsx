@@ -11,7 +11,7 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 const initialValues = {
   name: "",
   description: "",
-  image: "",
+  image: "#",
 };
 
 const CategoryCreate = () => {

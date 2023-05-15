@@ -50,7 +50,7 @@ const SelectReady = ({
             onBlur={handleBlur}
             error={!!touched[fieldName] && !!errors[fieldName]}
           >
-            <MenuItem value="0" sx={{ height: "24px" }}></MenuItem>
+            <MenuItem value={0} sx={{ height: "24px" }}></MenuItem>
             {data.map((el: any) => (
               <MenuItem key={el.id} value={el.id}>
                 {stringRetuned(el, name)}
