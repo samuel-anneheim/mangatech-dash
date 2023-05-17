@@ -1,5 +1,4 @@
 import Edition from "./edition.type";
-import Library from "./library.type";
 
 type Volume = {
   id: number;
@@ -15,7 +14,6 @@ type Volume = {
   followNumber: number;
   edition: Edition;
   editionId: number;
-  libraries: Library[];
   slug: string;
 }
 

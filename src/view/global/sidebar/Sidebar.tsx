@@ -192,13 +192,6 @@ const MyProSidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Library"
-              to="/lirabry"
-              icon={<CollectionsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
               title="Tags"
               to="/tag"
               icon={<TagOutlined />}

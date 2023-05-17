@@ -1,4 +1,3 @@
-import Library from "./library.type";
 import Volume from "./volume.type";
 enum Role {
   User = 'user',
@@ -18,7 +17,6 @@ type User = {
   countVolume: number;
   countVolumeRead: number;
   gender: string;
-  libraries: Library[];
   wishist: Volume[];
 }
 

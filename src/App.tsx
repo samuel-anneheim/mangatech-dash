@@ -6,7 +6,6 @@ import Dashboard from "./view/dashboard";
 import { MyProSidebarProvider } from "./view/global/sidebar/SidebarContext";
 import TagList from "./view/tags/tagList";
 import TagsCreate from "./view/tags/tagCreate";
-import TagView from "./view/tags/TagView";
 import AuthorList from "./view/authors/AuthorList";
 import AuthorCreate from "./view/authors/AuthorCreate";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -22,6 +21,7 @@ import EditionCreate from "./view/edition/EditionCreate";
 import NotFound from "./view/global/NotFound";
 import VolumeList from "./view/volume/VolumeList";
 import VolumeCreate from "./view/volume/VolumeCreate";
+import CategoryView from "./view/category/CategoryView";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -42,6 +42,7 @@ function App() {
 
                   <Route path="category" element={<CategoryList />} />
                   <Route path="category/create" element={<CategoryCreate />} />
+                  <Route path="category/view" element={<CategoryView />} />
 
                   <Route path="collection" element={<CollectionList />}/>
                   <Route path="collection/create" element={<CollectionCreate />}/>
@@ -50,11 +51,14 @@ function App() {
                   <Route path="edition/create" element={<EditionCreate />} />
 
                   <Route path="editor" element={<EditorList />} />
-                  <Route path="editor/create" element={<EditorCreate />} />
+                  <Route path="editor/:id" element={<EditorCreate status="view"/>} />
+                  <Route path="editor/create" element={<EditorCreate status="create"/>} />
+                  <Route path="editor/edit/:id" element={<EditorCreate status="edit"/>} />
 
                   <Route path="tag" element={<TagList />} />
-                  <Route path="tag/create" element={<TagsCreate />} />
-                  <Route path="tag/:id" element={<TagView />} />
+                  <Route path="tag/:id" element={<TagsCreate status="view"/>} />
+                  <Route path="tag/create" element={<TagsCreate status="create"/>} />
+                  <Route path="tag/edit/:id" element={<TagsCreate status="edit"/>} />
 
                   <Route path="volume" element={<VolumeList />} />
                   <Route path="volume/create" element={<VolumeCreate />} />

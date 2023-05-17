@@ -7,24 +7,31 @@ import Header from "../../components/Header";
 import { Formik } from "formik";
 import EditorValidation from "../../validation/editor.validation";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import { useParams } from "react-router-dom";
+import useEditorEdit from "../../hooks/editor/useEditorEdit";
 
-const initialValues = {
-  name: "",
-  logo: "",
-  description: "",
-  officialWebsite: "",
+type Props = {
+  status: string;
 };
 
-const EditorCreate = () => {
+const EditorCreate = ({ status }: Props) => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
-  const [logo, setLogo] = useState("#");
+  
+  let { id } = useParams<{ id: string }>();
+  const { initialValues, alertErrorText, alertText, title, subtitle, logo, setLogo } =
+    useEditorEdit(status ,id ? parseInt(id) : undefined);
+    
   const handleFormSubmit = async (values: any, resetForm: any) => {
     values = functionHelper.setEmptyToUndefined(values);
     values.logo = logo === "#" ? undefined : logo;
-    (await EditorService.create(values)) === false
+    status !== "edit"
+      ? (await EditorService.create(values)) === false
+        ? setAlertError(true)
+        : (resetForm({ initialValues }), setAlert(true), setLogo("#"))
+      : (await EditorService.update(id ? +id : 0, values)) === false
       ? setAlertError(true)
-      : (resetForm({ initialValues }), setAlert(true), setLogo("#"));
+      : setAlert(true);
   };
 
   const handleUploadLogo = (event: any) => {
@@ -36,22 +43,23 @@ const EditorCreate = () => {
       <AlertCreate
         alert={alert}
         setAlert={setAlert}
-        text="Editor created succefully"
+        text={alertText}
         severity="success"
       />
       <AlertCreate
         alert={alertError}
         setAlert={setAlertError}
-        text="Editor not created"
+        text={alertErrorText}
         severity="error"
       />
-      <Header title="CREATE EDITOR" subtitle="Create a new editor" />
+      <Header title={title} subtitle={subtitle} />
       <Formik
         onSubmit={(values, { resetForm }) => {
           handleFormSubmit(values, resetForm);
         }}
         initialValues={initialValues}
         validationSchema={EditorValidation}
+        enableReinitialize
       >
         {({
           values,
@@ -68,6 +76,7 @@ const EditorCreate = () => {
               gridTemplateColumns="repeat(4, minmax(0, 1fr)"
             >
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -80,29 +89,38 @@ const EditorCreate = () => {
                 helperText={touched.name && errors.name}
                 sx={{ gridColumn: "span 4" }}
               />
-              <label htmlFor="logo">
-                <input
-                  style={{ display: "none" }}
-                  id="logo"
-                  name="logo"
-                  type="file"
-                  onChange={handleUploadLogo}
-                />
-                <Button color="secondary" variant="contained" component="span">
-                  Upload Logo
-                </Button>
-              </label>
+              {status !== "view" && (
+                <label htmlFor="logo">
+                  <input
+                    style={{ display: "none" }}
+                    id="logo"
+                    name="logo"
+                    type="file"
+                    onChange={handleUploadLogo}
+                  />
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    component="span"
+                  >
+                    Upload Logo
+                  </Button>
+                </label>
+              )}
               {logo !== "#" && (
                 <Box
                   display="flex"
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
+                  {status !== "view" && (
                   <CancelOutlinedIcon onClick={() => setLogo("#")} />
+                  )}
                   <img src={logo} alt="preview" width="auto" height="200px" />
                 </Box>
               )}
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -116,6 +134,7 @@ const EditorCreate = () => {
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -129,11 +148,13 @@ const EditorCreate = () => {
                 sx={{ gridColumn: "span 4" }}
               />
             </Box>
+            {status !== "view" && (
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create new editor
+                {status === "edit" ? "Update" : "create"} new editor
               </Button>
             </Box>
+            )}
           </form>
         )}
       </Formik>

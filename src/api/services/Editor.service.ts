@@ -13,6 +13,18 @@ class EditorService {
       });
   }
 
+  public getOne = async (id: number) => {
+    return await client
+      .get(`/editor/${id}`)
+      .then((response) => {
+        const data = response.data;
+        return data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   public create = async (data: any) => {
     return await client.post(`/editor`, data).catch((error) => {
       console.log(error);
@@ -27,8 +39,9 @@ class EditorService {
   }
 
   public update = async (id: number, data: any) => {
-    return await client.put(`/editor/${id}`, data).catch((error) => {
+    return await client.patch(`/editor/${id}`, data).catch((error) => {
       console.log(error);
+      return false;
     });
   }
 }

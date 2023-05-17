@@ -14,6 +14,30 @@ class TagService {
       });
   };
 
+  public getOne = async (id: number) => {
+    return await client
+      .get(`/tag/${id}`)
+      .then((response) => {
+        const data = response.data;
+        return data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  public update = async (id: number, data: any) => {
+    return await client
+      .patch(`/tag/${id}`, data)
+      .then((response) => {
+        const data = response.data;
+        return data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   public create = async (data: Tag) => {
     return await client
       .post(`/tag`, data)

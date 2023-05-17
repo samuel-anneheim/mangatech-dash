@@ -1,7 +1,7 @@
 type Tag = {
-  id: number;
+  id?: number;
   name: string;
-  collectionsCount: number;
+  collectionsCount?: number;
 }
 
 export default Tag;

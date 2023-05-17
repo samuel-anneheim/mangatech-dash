@@ -5,19 +5,29 @@ import Header from "../../components/Header";
 import { TagValidation } from "../../validation/tag.validation";
 import TagService from "../../api/services/Tag.service";
 import AlertCreate from "../../components/alert/AlertCreate";
+import useTagEdit from "../../hooks/tag/useTagEdit";
+import { useParams } from "react-router-dom";
+import Tag from "../../schema/tag.type";
 
-const initialValues = {
-  name: "",
+type Props = {
+  status: string;
 };
 
-const TagsCreate = () => {
+const TagsCreate = ({ status }: Props) => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
+  let { id } = useParams<{ id: string }>();
+  const { initialValues, alertErrorText, alertText, title, subtitle } =
+    useTagEdit(status, id ? parseInt(id) : undefined);
+
   const handleFormSubmit = async (values: any, resetForm: any) => {
-    console.log(values);
-    (await TagService.create(values)) === false
-      ? setAlertError(true)
-      : (resetForm({ initialValues }), setAlert(true));
+    status !== "edit"
+      ? (await TagService.create(values)) === false
+        ? setAlertError(true)
+        : (resetForm({ initialValues }), setAlert(true))
+      : (await TagService.update(id ? +id : 0, values)) === false
+        ? setAlertError(true)
+        : setAlert(true);
   };
 
   return (
@@ -25,22 +35,23 @@ const TagsCreate = () => {
       <AlertCreate
         alert={alert}
         setAlert={setAlert}
-        text="Tag created succefully"
+        text={alertText}
         severity="success"
       />
       <AlertCreate
         alert={alertError}
         setAlert={setAlertError}
-        text="Tag not created"
+        text={alertErrorText}
         severity="error"
       />
-      <Header title="CREATE TAG" subtitle="Create a new tag" />
+      <Header title={title} subtitle={subtitle} />
       <Formik
         onSubmit={(values, { resetForm }) => {
           handleFormSubmit(values, resetForm);
         }}
         initialValues={initialValues}
         validationSchema={TagValidation}
+        enableReinitialize
       >
         {({
           values,
@@ -57,6 +68,7 @@ const TagsCreate = () => {
               gridTemplateColumns="repeat(4, minmax(0, 1fr)"
             >
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -70,11 +82,13 @@ const TagsCreate = () => {
                 sx={{ gridColumn: "span 4" }}
               />
             </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create new tag
-              </Button>
-            </Box>
+            {status !== "view" && (
+              <Box display="flex" justifyContent="end" mt="20px">
+                <Button type="submit" color="secondary" variant="contained">
+                  {status === "edit" ? "Update" : "create"} new tag
+                </Button>
+              </Box>
+            )}
           </form>
         )}
       </Formik>
