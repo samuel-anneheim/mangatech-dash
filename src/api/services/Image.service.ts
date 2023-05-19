@@ -4,7 +4,6 @@ class ImageService {
   public create = async (data: any) => {
     let formData = new FormData();
     formData.append("file", data);
-    console.log(data);
     return await client
       .post(`/image`, formData, {
         headers: {
@@ -12,8 +11,7 @@ class ImageService {
         },
       })
       .then((response) => {
-        const data = response.data;
-        console.log(data);
+        const data = response.data
         return data;
       })
       .catch((error) => {

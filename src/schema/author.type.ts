@@ -5,7 +5,7 @@ type Author = {
   gender: string;
   image: string;
   biography: string;
-  dateOfBirth: Date;
+  dateOfBirth: Date | string;
 }
 
 export default Author;

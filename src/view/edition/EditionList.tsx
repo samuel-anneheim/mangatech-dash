@@ -51,7 +51,7 @@ const EditionList = () => {
           <ActionsBlock
             id={row.id}
             name={row.title}
-            route="collection"
+            route="edition"
             setAlert={setAlertWarn}
             setNameDelete={setNameDelete}
             setIdDelete={setIdDelete}

@@ -1,3 +1,4 @@
+import Edition from "../../schema/edition.type";
 import client from "../client";
 
 class EditionService {
@@ -5,10 +6,7 @@ class EditionService {
     return await client
       .get(`/edition/collections`)
       .then((response) => {
-        const data = response.data;
-        console.log(data);
-
-        return data;
+        return response.data;
       })
       .catch((error) => {
         console.log(error);
@@ -21,19 +19,36 @@ class EditionService {
     });
   };
 
-  public getWhereCollectionId = async (id: number) => {
+  public update = async (id: number, data: Edition ) => {
+    return await client.patch(`/edition/${id}`, data).catch((error) => {
+      console.log(error);
+      return false;
+    });
+  }
+
+  public getOne = async (id: number) => {
     return await client
-      .get(`/edition/collectionId/${id}`)
+      .get(`/edition/${id}`)
       .then((response) => {
-        const data = response.data;
-        return data;
+        return response.data;
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  public create = async (data: any) => {
+  public getWhereCollectionId = async (id: number) => {
+    return await client
+      .get(`/edition/collectionId/${id}`)
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  public create = async (data: Edition) => {
     return await client.post(`/edition`, data).catch((error) => {
       console.log(error);
       return false;

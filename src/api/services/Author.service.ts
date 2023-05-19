@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import Author from "../../schema/author.type";
 import client from "../client";
 
@@ -6,24 +7,36 @@ class AuthorService {
     return await client
       .get(`/author`)
       .then((response) => {
-        const data = response.data;
-        return data;
+        return response.data;
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  public create = async (data: Author, setAlert: any) => {
+  public getOne = async (id: number) => {
     return await client
-      .post(`/author`, data)
-      .then(() => {
-        setAlert(true);
+      .get(`/author/${id}`)
+      .then((response) => {
+        return response.data;
       })
       .catch((error) => {
         console.log(error);
-        return false;
       });
+  };
+
+  public create = async (data: Author) => {
+    return await client.post(`/author`, data).catch((error) => {
+      console.log(error);
+      return false;
+    });
+  };
+
+  public update = async (id: number, data: Author) => {
+    return await client.patch(`/author/${id}`, data).catch((error) => {
+      console.log(error);
+      return false;
+    });
   };
 
   public delete = async (id: number) => {

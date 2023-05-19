@@ -20,92 +20,65 @@ import { Formik } from "formik";
 import { VolumeValidation } from "../../validation/volume.validation";
 import { DatePicker } from "@mui/x-date-pickers";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import EditionService from "../../api/services/Edition.service";
-import CollectionService from "../../api/services/Collection.Service";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Collection from "../../schema/collection.type";
 import Edition from "../../schema/edition.type";
+import useVolumeEdit from "../../hooks/volume/useVolumeEdit";
 
-const initialValues = {
-  title: "",
-  number: 0,
-  releaseDate: "",
-  image: "#",
-  resume: "",
-  nbrPages: 0,
-  price: 0,
-  visibility: false,
-  editionId: 0,
-
-  //Not used in form but send to API (is required)
-  createDate: dayjs(new Date()).format("YYYY-MM-DD"),
-  followNumber: 0,
+type Props = {
+  status: string;
 };
 
-const VolumeCreate = () => {
-  const [alert, setAlert] = useState(false);
-  const [alertError, setAlertError] = useState(false);
-  const [image, setImage] = useState("#");
-  const [collection, setCollection] = useState<Collection[]>([]);
-  const [collectionId, setCollectionId] = useState<number>(0);
-  const [editionList, setEditionList] = useState<Edition[]>([]);
-  const [editionId, setEditionId] = useState<number>(0);
-
-  const handleFormSubmit = async (values: any, resetForm: any) => {
-    values = functionHelper.setEmptyToUndefined(values);
-    values.image = image === "#" ? undefined : image;
-    values.image = image ? image : undefined;
-    values.editionId = editionId ? editionId : undefined;
-    if (values.releaseDate) {
-      values.releaseDate = dayjs(values.releaseDate).format("YYYY-MM-DD");
-    }
-    (await VolumeService.create(values, setAlert)) === false
-      ? setAlertError(true)
-      : (resetForm({ initialValues }), setAlert(true));
-  };
-
-  useEffect(() => {
-    CollectionService.list().then((value) => setCollection(value));
-  }, []);
-
-  const handleChangeCollectionId = async (event: any) => {
-    const value = event.target.value;
-    setCollectionId(value);
-    setEditionId(0);
-    if (value !== 0) {
-      await EditionService.getWhereCollectionId(value).then((value) =>
-        setEditionList(value)
-      );
-    } else {
-      setEditionList([]);
-    }
-  };
+const VolumeCreate = ({ status }: Props) => {
+  let { id } = useParams<{ id: string }>();
+  const {
+    initialValues,
+    alertErrorText,
+    alertText,
+    title,
+    subtitle,
+    collection,
+    editionList,
+    setEditionId,
+    handleChangeCollectionId,
+    collectionId,
+    editionId,
+    image,
+    setImage,
+    alert,
+    alertError,
+    setAlert,
+    setAlertError,
+    handleFormSubmit,
+  } = useVolumeEdit(status, id ? parseInt(id) : undefined);
 
   const handleUploadImage = (event: any) => {
     functionHelper.uploadImage(event, setImage);
   };
+
   return (
     <Box m="20px">
       <AlertCreate
         alert={alert}
         setAlert={setAlert}
-        text="Volume created succefully"
+        text={alertText}
         severity="success"
       />
       <AlertCreate
         alert={alertError}
         setAlert={setAlertError}
-        text="Volume not created"
+        text={alertErrorText}
         severity="error"
       />
-      <Header title="CREATE VOLUME" subtitle="Create a new volume" />
+      <Header title={title} subtitle={subtitle} />
       <Formik
         onSubmit={(values, { resetForm }) => {
           handleFormSubmit(values, resetForm);
         }}
-        initialValues={initialValues}
+        initialValues={{...initialValues}}
         validationSchema={VolumeValidation}
+        enableReinitialize
       >
         {({
           values,
@@ -124,6 +97,7 @@ const VolumeCreate = () => {
             >
               <TextField
                 fullWidth
+                disabled={status === "view"}
                 variant="filled"
                 type="text"
                 label="Title*"
@@ -137,6 +111,7 @@ const VolumeCreate = () => {
               />
               <TextField
                 fullWidth
+                disabled={status === "view"}
                 variant="filled"
                 type="number"
                 label="Number*"
@@ -149,6 +124,7 @@ const VolumeCreate = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <DatePicker
+                disabled={status === "view"}
                 label="Release Date"
                 onChange={(value) => setFieldValue("releaseDate", value, true)}
                 value={values.releaseDate}
@@ -167,6 +143,7 @@ const VolumeCreate = () => {
               />
               <TextField
                 fullWidth
+                disabled={status === "view"}
                 variant="filled"
                 type="number"
                 label="Number of pages"
@@ -180,6 +157,7 @@ const VolumeCreate = () => {
               />
               <TextField
                 fullWidth
+                disabled={status === "view"}
                 variant="filled"
                 type="text"
                 label="Resume"
@@ -192,6 +170,7 @@ const VolumeCreate = () => {
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="number"
@@ -211,6 +190,7 @@ const VolumeCreate = () => {
               >
                 <FormGroup>
                   <Switch
+                    disabled={status === "view"}
                     checked={values.visibility}
                     onChange={handleChange}
                     name="visibility"
@@ -220,18 +200,24 @@ const VolumeCreate = () => {
                   <label>Visibility</label>
                 </FormGroup>
               </Box>
-              <label htmlFor="image">
-                <input
-                  style={{ display: "none" }}
-                  id="image"
-                  name="image"
-                  type="file"
-                  onChange={handleUploadImage}
-                />
-                <Button color="secondary" variant="contained" component="span">
-                  Upload image
-                </Button>
-              </label>
+              {status !== "view" && (
+                <label htmlFor="image">
+                  <input
+                    style={{ display: "none" }}
+                    id="image"
+                    name="image"
+                    type="file"
+                    onChange={handleUploadImage}
+                  />
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    component="span"
+                  >
+                    Upload image
+                  </Button>
+                </label>
+              )}
               {image !== "#" && (
                 <Box
                   display="flex"
@@ -255,6 +241,7 @@ const VolumeCreate = () => {
                   <Box width="85%">
                     <InputLabel>Collection</InputLabel>
                     <Select
+                      disabled={status === "view"}
                       value={collectionId}
                       fullWidth
                       onChange={handleChangeCollectionId}
@@ -269,13 +256,15 @@ const VolumeCreate = () => {
                       ))}
                     </Select>
                   </Box>
-                  <Box m={0.2}>
-                    <Link to={`/collection/create`}>
-                      <Fab color="secondary" aria-label="add" size="small">
-                        <AddOutlinedIcon />
-                      </Fab>
-                    </Link>
-                  </Box>
+                  {status !== "view" && (
+                    <Box m={0.2}>
+                      <Link to={`/collection/create`}>
+                        <Fab color="secondary" aria-label="add" size="small">
+                          <AddOutlinedIcon />
+                        </Fab>
+                      </Link>
+                    </Box>
+                  )}
                 </Box>
               </FormControl>
               {!!collectionId && (
@@ -292,6 +281,7 @@ const VolumeCreate = () => {
                     <Box width="85%">
                       <InputLabel>Edition</InputLabel>
                       <Select
+                        disabled={status === "view"}
                         value={editionId}
                         fullWidth
                         onChange={(e: any) => setEditionId(e.target.value)}
@@ -306,22 +296,26 @@ const VolumeCreate = () => {
                         ))}
                       </Select>
                     </Box>
-                    <Box m={0.2}>
-                      <Link to={`/edition/create`}>
-                        <Fab color="secondary" aria-label="add" size="small">
-                          <AddOutlinedIcon />
-                        </Fab>
-                      </Link>
-                    </Box>
+                    {status !== "view" && (
+                      <Box m={0.2}>
+                        <Link to={`/edition/create`}>
+                          <Fab color="secondary" aria-label="add" size="small">
+                            <AddOutlinedIcon />
+                          </Fab>
+                        </Link>
+                      </Box>
+                    )}
                   </Box>
                 </FormControl>
               )}
             </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create new Volume
-              </Button>
-            </Box>
+            {status !== "view" && (
+              <Box display="flex" justifyContent="end" mt="20px">
+                <Button type="submit" color="secondary" variant="contained">
+                  {status === "edit" ? "Update" : "create new"} volume
+                </Button>
+              </Box>
+            )}
           </form>
         )}
       </Formik>

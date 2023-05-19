@@ -1,4 +1,5 @@
 import Author from "../../schema/author.type";
+import Volume from "../../schema/volume.type";
 import client from "../client";
 
 class VolumeService {
@@ -14,15 +15,30 @@ class VolumeService {
       });
   };
 
-  public create = async (data: Author, setAlert: any) => {
+  public create = async (data: Volume) => {
     return await client
       .post(`/volume`, data)
-      .then(() => {
-        setAlert(true);
-      })
       .catch((error) => {
         console.log(error);
         return false;
+      });
+  };
+
+  public update = async (id: number, data: Volume ) => {
+    return await client.patch(`/volume/${id}`, data).catch((error) => {
+      console.log(error);
+      return false;
+    });
+  }
+
+  public getOne = async (id: number) => {
+    return await client
+      .get(`/volume/${id}/allRelations`)
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 

@@ -6,8 +6,7 @@ class TagService {
     return await client
       .get(`/tag/countCollection`)
       .then((response) => {
-        const data = response.data;
-        return data;
+        return response.data;
       })
       .catch((error) => {
         console.log(error);
@@ -18,8 +17,7 @@ class TagService {
     return await client
       .get(`/tag/${id}`)
       .then((response) => {
-        const data = response.data;
-        return data;
+        return response.data;
       })
       .catch((error) => {
         console.log(error);
@@ -30,11 +28,11 @@ class TagService {
     return await client
       .patch(`/tag/${id}`, data)
       .then((response) => {
-        const data = response.data;
-        return data;
+        return response.data;
       })
       .catch((error) => {
         console.log(error);
+        return false;
       });
   };
 

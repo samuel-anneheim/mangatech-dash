@@ -13,6 +13,7 @@ type Props = {
   errors: any;
   name: string;
   routeName: string;
+  status: string;
 };
 const SelectReady = ({
   data,
@@ -24,6 +25,7 @@ const SelectReady = ({
   name,
   routeName,
   fieldName,
+  status,
 }: Props) => {
 
   const stringRetuned = (el: any, name: string) => {
@@ -43,6 +45,7 @@ const SelectReady = ({
         <Box width="85%">
           <InputLabel>{name}</InputLabel>
           <Select
+            disabled={status === "view"}
             value={values[fieldName]}
             fullWidth
             onChange={handleChange}
@@ -58,6 +61,7 @@ const SelectReady = ({
             ))}
           </Select>
         </Box>
+        {status !== "view" && (
         <Box m={0.2}>
           <Link to={`/${routeName}/create`}>
             <Fab color="secondary" aria-label="add" size="small">
@@ -65,6 +69,7 @@ const SelectReady = ({
             </Fab>
           </Link>
         </Box>
+        )}
       </Box>
     </FormControl>
   );

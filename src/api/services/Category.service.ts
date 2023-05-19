@@ -14,6 +14,17 @@ class CategoryService {
       });
   };
 
+  public getOne = async (id: number) => {
+    return await client
+      .get(`/category/${id}`)
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   public create = async (data: Category) => {
     return await client
       .post(`/category`, data)
@@ -22,6 +33,13 @@ class CategoryService {
         return false;
       });
   }
+
+  public update = async (id: number, data: Category) => {
+    return await client.patch(`/category/${id}`, data).catch((error) => {
+      console.log(error);
+      return false;
+    });
+  };
 
   public delete = async (id: number) => {
     return await client.delete(`/category/${id}`).catch((error) => {

@@ -74,7 +74,7 @@ const   VolumeList = () => {
           <ActionsBlock
             id={row.id}
             name={row.name}
-            route="tag"
+            route="volume"
             setAlert={setAlertWarn}
             setNameDelete={setNameDelete}
             setIdDelete={setIdDelete}

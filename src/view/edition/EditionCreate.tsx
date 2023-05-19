@@ -10,30 +10,40 @@ import Header from "../../components/Header";
 import { Formik } from "formik";
 import EditionValidation from "../../validation/edition.validation";
 import SelectReady from "../../components/SelectReady";
+import { useParams } from "react-router-dom";
+import useEditionEdit from "../../hooks/edition/useEditionEdit";
 
-const initialValues = {
-  name: "",
-  collectionId: 0,
-}
+type Props = {
+  status: string;
+};
 
-const EditionCreate = () => {
+const EditionCreate = ({status}: Props) => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState<boolean>(false);
-  const [collections, setCollections] = useState<Collection[]>([]);
 
-  useEffect(() => {
-    CollectionService.list().then((data) => setCollections(data));
-    console.log(collections);
-    
-  }, []);
-  
+  let { id } = useParams<{ id: string }>();
+  const {
+    initialValues,
+    alertErrorText,
+    alertText,
+    title,
+    subtitle,
+    collections
+  } = useEditionEdit(status, id ? parseInt(id) : undefined);
+
   const handleFormSubmit = async (values: any, resetForm: any) => {
-    values = functionHelper.setEmptyToUndefined(values);
-    console.log(values);
-    
-    (await EditionService.create(values)) === false
-      ? setAlertError(true)
-      : (resetForm({ initialValues }), setAlert(true))
+    if (status === "create") {
+      values = functionHelper.setEmptyToUndefined(values);
+      (await EditionService.create(values)) === false
+        ? setAlertError(true)
+        : (resetForm({ initialValues }), setAlert(true))
+    } else if (status === "edit") {
+      values = functionHelper.formatEditPatch(values, initialValues);
+      if (!values) return;
+      (await EditionService.update(id ? +id : 0, values)) === false
+        ? setAlertError(true)
+        : setAlert(true);
+    }
   }
 
   return (
@@ -41,22 +51,23 @@ const EditionCreate = () => {
       <AlertCreate
         alert={alert}
         setAlert={setAlert}
-        text="Edition created succefully"
+        text={alertText}
         severity="success"
       />
       <AlertCreate
         alert={alertError}
         setAlert={setAlertError}
-        text="Edition not created"
+        text={alertErrorText}
         severity="error"
       />
-      <Header title="CREATE EDITION" subtitle="Create a new edition" />
+      <Header title={title} subtitle={subtitle} />
       <Formik
         onSubmit={(values, { resetForm }) => {
           handleFormSubmit(values, resetForm);
         }}
         initialValues={initialValues}
         validationSchema={EditionValidation}
+        enableReinitialize
       >
                 {({
           values,
@@ -73,6 +84,7 @@ const EditionCreate = () => {
               gridTemplateColumns="repeat(4, minmax(0, 1fr)"
             >
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -86,6 +98,7 @@ const EditionCreate = () => {
                 sx={{ gridColumn: "span 4" }}
               />
               <SelectReady
+                  status={status}
                   data={collections}
                   fieldName={"collectionId"}
                   handleChange={handleChange}
@@ -97,11 +110,14 @@ const EditionCreate = () => {
                   routeName={"collection"}
               />
             </Box>
+            {status !== "view" && (
+
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create new Edition
+              {status === "edit" ? "Update" : "create new"} edition
               </Button>
             </Box>
+            )}
           </form>
         )}
       </Formik>

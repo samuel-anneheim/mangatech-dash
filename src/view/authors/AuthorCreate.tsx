@@ -10,31 +10,48 @@ import AlertCreate from "../../components/alert/AlertCreate";
 import dayjs from "dayjs";
 import functionHelper from "../../utils/functionHelper";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import { useParams } from "react-router-dom";
+import useAuthorEdit from "../../hooks/author/useAuthorEdit";
 
-const initialValues = {
-  name: "",
-  surname: "",
-  gender: "",
-  image: "#",
-  biography: "",
-  dateOfBirth: "",
+type Props = {
+  status: string;
 };
 
-const AuthorCreate = () => {
+const AuthorCreate = ({ status }: Props) => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
-  const [image, setImage] = useState("#");
+
+  let { id } = useParams<{ id: string }>();
+  const {
+    initialValues,
+    alertErrorText,
+    alertText,
+    title,
+    subtitle,
+    image,
+    setImage,
+  } = useAuthorEdit(status, id ? parseInt(id) : undefined);
+
   const handleFormSubmit = async (values: any, resetForm: any) => {
-    values = functionHelper.setEmptyToUndefined(values);
-    console.log(values);
-    values.image = image === "#" ? undefined : image;
-    console.log(values);
-    if (values.dateOfBirth) {
-      values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
+    if (status === "create") {
+      values = functionHelper.setEmptyToUndefined(values);
+      values.image = image === "#" ? undefined : image;
+      if (values.dateOfBirth) {
+        values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
+      }
+      (await AuthorService.create(values)) === false
+        ? setAlertError(true)
+        : (resetForm({ initialValues }), setAlert(true));
+    } else if (status === "edit") {
+      values = functionHelper.formatEditPatch(values, initialValues, image);
+      if (!values) return;
+      if (values.dateOfBirth) {
+        values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
+      }
+      (await AuthorService.update(id ? +id : 0, values)) === false
+        ? setAlertError(true)
+        : setAlert(true);
     }
-    (await AuthorService.create(values, setAlert)) === false
-      ? setAlertError(true)
-      : (resetForm({ initialValues }), setAlert(true));
   };
 
   const handleUploadImage = (event: any) => {
@@ -46,22 +63,23 @@ const AuthorCreate = () => {
       <AlertCreate
         alert={alert}
         setAlert={setAlert}
-        text="Author created succefully"
+        text={alertText}
         severity="success"
       />
       <AlertCreate
         alert={alertError}
         setAlert={setAlertError}
-        text="Author not created"
+        text={alertErrorText}
         severity="error"
       />
-      <Header title="CREATE AUTHOR" subtitle="Create a new author" />
+      <Header title={title} subtitle={subtitle} />
       <Formik
         onSubmit={(values, { resetForm }) => {
           handleFormSubmit(values, resetForm);
         }}
         initialValues={initialValues}
         validationSchema={AuthorValidation}
+        enableReinitialize
       >
         {({
           values,
@@ -79,6 +97,7 @@ const AuthorCreate = () => {
               gridTemplateColumns="repeat(4, minmax(0, 1fr)"
             >
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -92,6 +111,7 @@ const AuthorCreate = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -104,29 +124,38 @@ const AuthorCreate = () => {
                 helperText={touched.surname && errors.surname}
                 sx={{ gridColumn: "span 2" }}
               />
-              <label htmlFor="image">
-                <input
-                  style={{ display: "none" }}
-                  id="image"
-                  name="image"
-                  type="file"
-                  onChange={handleUploadImage}
-                />
-                <Button color="secondary" variant="contained" component="span">
-                  Upload image
-                </Button>
-              </label>
+              {status !== "view" && (
+                <label htmlFor="image">
+                  <input
+                    style={{ display: "none" }}
+                    id="image"
+                    name="image"
+                    type="file"
+                    onChange={handleUploadImage}
+                  />
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    component="span"
+                  >
+                    Upload image
+                  </Button>
+                </label>
+              )}
               {image !== "#" && (
                 <Box
                   display="flex"
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
-                  <CancelOutlinedIcon onClick={() => setImage("#")} />
+                  {status !== "view" && (
+                    <CancelOutlinedIcon onClick={() => setImage("#")} />
+                  )}
                   <img src={image} alt="preview" width="auto" height="200px" />
                 </Box>
               )}
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -140,6 +169,7 @@ const AuthorCreate = () => {
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 select
                 variant="filled"
@@ -160,6 +190,7 @@ const AuthorCreate = () => {
                 ))}
               </TextField>
               <DatePicker
+                disabled={status === "view"}
                 label="Date Of Birth"
                 onChange={(value) => setFieldValue("dateOfBirth", value, true)}
                 value={values.dateOfBirth}
@@ -177,11 +208,13 @@ const AuthorCreate = () => {
                 }}
               />
             </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create new author
-              </Button>
-            </Box>
+            {status !== "view" && (
+              <Box display="flex" justifyContent="end" mt="20px">
+                <Button type="submit" color="secondary" variant="contained">
+                  {status === "edit" ? "Update" : "create new"} author
+                </Button>
+              </Box>
+            )}
           </form>
         )}
       </Formik>

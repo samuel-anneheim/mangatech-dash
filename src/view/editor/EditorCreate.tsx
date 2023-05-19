@@ -17,21 +17,32 @@ type Props = {
 const EditorCreate = ({ status }: Props) => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
-  
+
   let { id } = useParams<{ id: string }>();
-  const { initialValues, alertErrorText, alertText, title, subtitle, logo, setLogo } =
-    useEditorEdit(status ,id ? parseInt(id) : undefined);
-    
+  const {
+    initialValues,
+    alertErrorText,
+    alertText,
+    title,
+    subtitle,
+    logo,
+    setLogo,
+  } = useEditorEdit(status, id ? parseInt(id) : undefined);
+
   const handleFormSubmit = async (values: any, resetForm: any) => {
-    values = functionHelper.setEmptyToUndefined(values);
-    values.logo = logo === "#" ? undefined : logo;
-    status !== "edit"
-      ? (await EditorService.create(values)) === false
+    if (status === "create") {
+      values = functionHelper.setEmptyToUndefined(values);
+      values.logo = logo === "#" ? undefined : logo;
+      (await EditorService.create(values)) === false
         ? setAlertError(true)
-        : (resetForm({ initialValues }), setAlert(true), setLogo("#"))
-      : (await EditorService.update(id ? +id : 0, values)) === false
-      ? setAlertError(true)
-      : setAlert(true);
+        : (resetForm({ initialValues }), setAlert(true), setLogo("#"));
+    } else if (status === "edit") {
+      values = functionHelper.formatEditPatch(values, initialValues, logo);
+      if (!values) return;
+      (await EditorService.update(id ? +id : 0, values)) === false
+        ? setAlertError(true)
+        : setAlert(true);
+    }
   };
 
   const handleUploadLogo = (event: any) => {
@@ -114,7 +125,7 @@ const EditorCreate = ({ status }: Props) => {
                   sx={{ gridColumn: "span 4" }}
                 >
                   {status !== "view" && (
-                  <CancelOutlinedIcon onClick={() => setLogo("#")} />
+                    <CancelOutlinedIcon onClick={() => setLogo("#")} />
                   )}
                   <img src={logo} alt="preview" width="auto" height="200px" />
                 </Box>
@@ -149,11 +160,11 @@ const EditorCreate = ({ status }: Props) => {
               />
             </Box>
             {status !== "view" && (
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                {status === "edit" ? "Update" : "create"} new editor
-              </Button>
-            </Box>
+              <Box display="flex" justifyContent="end" mt="20px">
+                <Button type="submit" color="secondary" variant="contained">
+                  {status === "edit" ? "Update" : "create new"} editor
+                </Button>
+              </Box>
             )}
           </form>
         )}

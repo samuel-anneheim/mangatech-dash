@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import EditorService from "../../api/services/Editor.service";
 import Editor from "../../schema/editor.type";
+import functionHelper from "../../utils/functionHelper";
 
 const useEditorEdit = (status: string, id?: number) => {
   const [initialValues, setInitialValues] = useState<Editor>({
     name: "",
-    logo: "",
+    logo: "#",
     description: "",
     officialWebsite: "",
   } as Editor);
@@ -24,8 +25,8 @@ const useEditorEdit = (status: string, id?: number) => {
     } else {
       if (id) {
         EditorService.getOne(id).then((res) => {
-          setInitialValues(res);
-          setLogo(res.logo);
+          setInitialValues(functionHelper.formatEdtiForm(res));
+          res.logo && setLogo(res.logo);
         });
       }
       if (status === "edit") {

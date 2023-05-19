@@ -13,37 +13,22 @@ import {
   TextField,
   MenuItem,
   Chip,
+  Fab,
 } from "@mui/material";
 import Header from "../../components/Header";
 import { Formik } from "formik";
 import CollectionValidation from "../../validation/collection.valdiation";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
-import AuthorService from "../../api/services/Author.service";
-import CategoryService from "../../api/services/Category.service";
-import Editor from "../../schema/editor.type";
-import EditorService from "../../api/services/Editor.service";
-import Category from "../../schema/category.type";
-import Author from "../../schema/author.type";
 import Tag from "../../schema/tag.type";
-import TagService from "../../api/services/Tag.service";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import SelectReady from "../../components/SelectReady";
+import { Link, useParams } from "react-router-dom";
+import useCollectionEdit from "../../hooks/collection/useCollectionEdit";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 
-const initialValues = {
-  title: "",
-  image: "#",
-  releaseDate: "",
-  resume: "",
-  isFinish: false,
-  visibility: false,
-  editorId: 0,
-  categoryId: 0,
-  authorId: 0,
-  tagsId: [],
-
-  //Not used in form but send to API (is required)
-  createDate: dayjs(new Date()).format("YYYY-MM-DD"),
+type Props = {
+  status: string;
 };
 
 const ITEM_HEIGHT = 48;
@@ -57,32 +42,51 @@ const MenuProps = {
   },
 };
 
-const CollectionCreate = () => {
+const CollectionCreate = ({ status }: Props) => {
   const [alert, setAlert] = useState<boolean>(false);
   const [alertError, setAlertError] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("#");
-  const [editor, setEditor] = useState<Editor[]>([]);
-  const [category, setCategory] = useState<Category[]>([]);
-  const [author, setAuthor] = useState<Author[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
 
-  useEffect(() => {
-    EditorService.list().then((data) => setEditor(data));
-    CategoryService.list().then((data) => setCategory(data));
-    AuthorService.list().then((data) => setAuthor(data));
-    TagService.list().then((data) => setTags(data));
-  }, []);
+  let { id } = useParams<{ id: string }>();
+  const {
+    alertErrorText,
+    alertText,
+    initialValues,
+    title,
+    subtitle,
+    image,
+    setImage,
+    editor,
+    category,
+    author,
+    tags,
+  } = useCollectionEdit(status, id ? parseInt(id) : undefined);
 
   const handleFormSubmit = async (values: any, resetForm: any) => {
-    values = functionHelper.setEmptyToUndefined(values);
-    values.image = image === "#" ? undefined : image;
-    values.image = image ? image : undefined;
-    if (values.releaseDate) {
-      values.releaseDate = dayjs(values.releaseDate).format("YYYY-MM-DD");
+    if (status === "create") {
+      values = functionHelper.setEmptyToUndefined(values);
+      values.image = image === "#" ? undefined : image;
+      values.createDate = dayjs(new Date()).format("YYYY-MM-DD");
+      if (values.releaseDate) {
+        values.releaseDate = dayjs(values.releaseDate).format("YYYY-MM-DD");
+      }
+      (await CollectionService.create(values)) === false
+        ? (setAlertError(true),
+          (values.releaseDate = ""),
+          (values.createDate = ""))
+        : (resetForm({ initialValues }), setAlert(true));
+    } else if (status === "edit") {
+      values = functionHelper.formatEditPatch(values, initialValues, image);
+      if (!values) return;
+      if (values.releaseDate) {
+        values.releaseDate = dayjs(values.releaseDate).format("YYYY-MM-DD");
+      }
+      if (values.tagsId) {
+        values.tags = values.tagsId.map((tag: Tag) => tag.id);
+      }
+      (await CollectionService.update(id ? +id : 0, values)) === false
+        ? setAlertError(true)
+        : setAlert(true);
     }
-    (await CollectionService.create(values)) === false
-      ? setAlertError(true)
-      : (resetForm({ initialValues }), setAlert(true));
   };
 
   const handleUploadImage = (event: any) => {
@@ -94,22 +98,23 @@ const CollectionCreate = () => {
       <AlertCreate
         alert={alert}
         setAlert={setAlert}
-        text="Collection created succefully"
+        text={alertText}
         severity="success"
       />
       <AlertCreate
         alert={alertError}
         setAlert={setAlertError}
-        text="Collection not created"
+        text={alertErrorText}
         severity="error"
       />
-      <Header title="CREATE COLLECTION" subtitle="Create a new collection" />
+      <Header title={title} subtitle={subtitle} />
       <Formik
         onSubmit={(values, { resetForm }) => {
           handleFormSubmit(values, resetForm);
         }}
         initialValues={initialValues}
         validationSchema={CollectionValidation}
+        enableReinitialize
       >
         {({
           values,
@@ -127,6 +132,7 @@ const CollectionCreate = () => {
               gridTemplateColumns="repeat(4, minmax(0, 1fr)"
             >
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -140,6 +146,7 @@ const CollectionCreate = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <DatePicker
+                disabled={status === "view"}
                 label="Release Date"
                 onChange={(value) => setFieldValue("releaseDate", value, true)}
                 value={values.releaseDate}
@@ -156,29 +163,38 @@ const CollectionCreate = () => {
                   },
                 }}
               />
-              <label htmlFor="image">
-                <input
-                  style={{ display: "none" }}
-                  id="image"
-                  name="image"
-                  type="file"
-                  onChange={handleUploadImage}
-                />
-                <Button color="secondary" variant="contained" component="span">
-                  Upload image
-                </Button>
-              </label>
+              {status !== "view" && (
+                <label htmlFor="image">
+                  <input
+                    style={{ display: "none" }}
+                    id="image"
+                    name="image"
+                    type="file"
+                    onChange={handleUploadImage}
+                  />
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    component="span"
+                  >
+                    Upload image
+                  </Button>
+                </label>
+              )}
               {image !== "#" && (
                 <Box
                   display="flex"
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
-                  <CancelOutlinedIcon onClick={() => setImage("#")} />
+                  {status !== "view" && (
+                    <CancelOutlinedIcon onClick={() => setImage("#")} />
+                  )}
                   <img src={image} alt="preview" width="auto" height="200px" />
                 </Box>
               )}
               <TextField
+                disabled={status === "view"}
                 fullWidth
                 variant="filled"
                 type="text"
@@ -192,6 +208,7 @@ const CollectionCreate = () => {
                 sx={{ gridColumn: "span 4" }}
               />
               <SelectReady
+                status={status}
                 data={author}
                 fieldName={"authorId"}
                 handleChange={handleChange}
@@ -203,6 +220,7 @@ const CollectionCreate = () => {
                 routeName={"author"}
               />
               <SelectReady
+                status={status}
                 data={editor}
                 fieldName={"editorId"}
                 handleChange={handleChange}
@@ -215,6 +233,7 @@ const CollectionCreate = () => {
               />
               <SelectReady
                 data={category}
+                status={status}
                 fieldName={"categoryId"}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
@@ -229,35 +248,58 @@ const CollectionCreate = () => {
                 sx={{ gridColumn: "span 2" }}
                 fullWidth
               >
-                <InputLabel id="demo-multiple-chip-label" variant="filled">
-                  Tags
-                </InputLabel>
-                <Select
-                  labelId="demo-multiple-chip-label"
-                  id="demo-multiple-chip"
-                  name="tagsId"
-                  label="Tags"
-                  variant="filled"
-                  multiple
-                  value={values.tagsId}
-                  onChange={handleChange}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {selected.map((value) => {
-                        const tag = tags.filter((tag: Tag) => tag.id == value);
-                        const tagName = tag[0].name;
-                        return <Chip key={value} label={tagName} />;
-                      })}
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Box width="85%">
+                    <InputLabel id="demo-multiple-chip-label" variant="filled">
+                      Tags
+                    </InputLabel>
+                    <Select
+                      fullWidth
+                      disabled={status === "view"}
+                      labelId="demo-multiple-chip-label"
+                      id="demo-multiple-chip"
+                      name="tagsId"
+                      label="Tags"
+                      variant="filled"
+                      multiple
+                      value={values.tagsId}
+                      onChange={handleChange}
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, width: "100%"}}
+                        >
+                          {selected.map((value) => {
+                            const tag = tags.filter(
+                              (tag: Tag) => tag.id == value
+                            );
+                            const tagName = tag[0].name;
+                            return <Chip key={value} label={tagName} />;
+                          })}
+                        </Box>
+                      )}
+                      MenuProps={MenuProps}
+                    >
+                      {tags.map((tag) => (
+                        <MenuItem key={tag.name} value={tag.id}>
+                          {tag.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+                  {status !== "view" && (
+                    <Box m={0.2}>
+                      <Link to={`/collection/create`}>
+                        <Fab color="secondary" aria-label="add" size="small">
+                          <AddOutlinedIcon />
+                        </Fab>
+                      </Link>
                     </Box>
                   )}
-                  MenuProps={MenuProps}
-                >
-                  {tags.map((tag) => (
-                    <MenuItem key={tag.name} value={tag.id}>
-                      {tag.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                </Box>
               </FormControl>
               <Box
                 display="flex"
@@ -266,6 +308,7 @@ const CollectionCreate = () => {
               >
                 <FormGroup sx={{ width: "40%" }}>
                   <Switch
+                    disabled={status === "view"}
                     checked={values.isFinish}
                     onChange={handleChange}
                     name="isFinish"
@@ -276,6 +319,7 @@ const CollectionCreate = () => {
                 </FormGroup>
                 <FormGroup>
                   <Switch
+                    disabled={status === "view"}
                     checked={values.visibility}
                     onChange={handleChange}
                     name="visibility"
@@ -286,11 +330,13 @@ const CollectionCreate = () => {
                 </FormGroup>
               </Box>
             </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create new collection
-              </Button>
-            </Box>
+            {status !== "view" && (
+              <Box display="flex" justifyContent="end" mt="20px">
+                <Button type="submit" color="secondary" variant="contained">
+                  {status === "edit" ? "Update" : "create new"} collection
+                </Button>
+              </Box>
+            )}
           </form>
         )}
       </Formik>

@@ -21,7 +21,6 @@ import EditionCreate from "./view/edition/EditionCreate";
 import NotFound from "./view/global/NotFound";
 import VolumeList from "./view/volume/VolumeList";
 import VolumeCreate from "./view/volume/VolumeCreate";
-import CategoryView from "./view/category/CategoryView";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -38,17 +37,24 @@ function App() {
                   <Route path="/" element={<Dashboard />} />
 
                   <Route path="author" element={<AuthorList />} />
-                  <Route path="author/create" element={<AuthorCreate />} />
+                  <Route path="author/:id" element={<AuthorCreate status="view"/>} />
+                  <Route path="author/create" element={<AuthorCreate status="create"/>} />
+                  <Route path="author/edit/:id" element={<AuthorCreate status="edit"/>} />
 
                   <Route path="category" element={<CategoryList />} />
-                  <Route path="category/create" element={<CategoryCreate />} />
-                  <Route path="category/view" element={<CategoryView />} />
+                  <Route path="category/:id" element={<CategoryCreate status="view" />} />
+                  <Route path="category/create" element={<CategoryCreate status="create" />} />
+                  <Route path="category/edit/:id" element={<CategoryCreate status="edit" />} />
 
                   <Route path="collection" element={<CollectionList />}/>
-                  <Route path="collection/create" element={<CollectionCreate />}/>
+                  <Route path="collection/:id" element={<CollectionCreate status="view" />}/>
+                  <Route path="collection/create" element={<CollectionCreate status="create" />}/>
+                  <Route path="collection/edit/:id" element={<CollectionCreate status="edit" />}/>
 
                   <Route path="edition" element={<EditionList />} />
-                  <Route path="edition/create" element={<EditionCreate />} />
+                  <Route path="edition/:id" element={<EditionCreate status="view" />} />
+                  <Route path="edition/create" element={<EditionCreate status="create" />} />
+                  <Route path="edition/edit/:id" element={<EditionCreate status="edit" />} />
 
                   <Route path="editor" element={<EditorList />} />
                   <Route path="editor/:id" element={<EditorCreate status="view"/>} />
@@ -61,7 +67,9 @@ function App() {
                   <Route path="tag/edit/:id" element={<TagsCreate status="edit"/>} />
 
                   <Route path="volume" element={<VolumeList />} />
-                  <Route path="volume/create" element={<VolumeCreate />} />
+                  <Route path="volume/:id" element={<VolumeCreate status="view" />} />
+                  <Route path="volume/create" element={<VolumeCreate status="create" />} />
+                  <Route path="volume/edit/:id" element={<VolumeCreate status="edit" />} />
 
                   <Route path="*" element={<NotFound />} />
                 </Routes>

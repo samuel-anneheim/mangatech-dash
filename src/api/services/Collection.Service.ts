@@ -1,3 +1,4 @@
+import Collection from "../../schema/collection.type";
 import client from "../client";
 
 class CollectionService {
@@ -5,15 +6,25 @@ class CollectionService {
     return await client
       .get(`/collection`)
       .then((response) => {
-        const data = response.data;
-        return data;
+        return response.data;
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
-  public create = async (data: any) => {
+  public getOne = async (id: number) => {
+    return await client
+      .get(`/collection/${id}`)
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  public create = async (data: Collection) => {
     return await client.post(`/collection`, data).catch((error) => {
       console.log(error);
       return false;
@@ -26,9 +37,10 @@ class CollectionService {
     });
   }
 
-  public update = async (id: number, data: any) => {
-    return await client.put(`/collection/${id}`, data).catch((error) => {
+  public update = async (id: number, data: Collection) => {
+    return await client.patch(`/collection/${id}`, data).catch((error) => {
       console.log(error);
+      return false;
     });
   }
 }
