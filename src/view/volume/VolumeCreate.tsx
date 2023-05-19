@@ -224,9 +224,11 @@ const VolumeCreate = ({ status }: Props) => {
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
-                  <CancelOutlinedIcon onClick={() => setImage("#")} />
-                  <img src={image} alt="preview" width="auto" height="200px" />
-                </Box>
+                  {status !== "view" && (
+                    <CancelOutlinedIcon onClick={() => setImage("#")} />
+                  )}
+                    <img src={image} alt="preview" width="auto" height="200px" />
+                    </Box>
               )}
               <FormControl
                 variant="filled"
