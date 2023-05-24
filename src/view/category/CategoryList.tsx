@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useCategoryList from "../../hooks/category/useCategoryList";
 import Category from "../../schema/category.type";
 import CategoryService from "../../api/services/Category.service";
@@ -8,6 +8,7 @@ import { Box } from "@mui/material";
 import ListView from "../../components/ListView";
 import DeleteAlert from "../../components/alert/DeleteAlert";
 import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
+import { AuthContext } from "../../context/AuthContext";
 
 const CategoryList = () => {
   const { data, loadData, setData } = useCategoryList();
@@ -15,12 +16,13 @@ const CategoryList = () => {
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [nameDelete, setNameDelete] = useState("");
+  const {accessToken} = useContext(AuthContext);
 
   const handleDelete = async () => {
     const newCategories = data.filter(
       (category: Category) => category.id !== idDelete
     );
-    await CategoryService.delete(idDelete);
+    await CategoryService.delete(idDelete, accessToken ? accessToken : '');
     setSuccessDelete(true);
     setData(newCategories);
     setTimeout(() => {

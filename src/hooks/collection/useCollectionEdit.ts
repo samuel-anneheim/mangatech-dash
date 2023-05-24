@@ -11,6 +11,7 @@ import EditorService from "../../api/services/Editor.service";
 import CategoryService from "../../api/services/Category.service";
 import AuthorService from "../../api/services/Author.service";
 import TagService from "../../api/services/Tag.service";
+import LogoutContext from "../../context/LogoutContext";
 
 const useCollectionEdit = (status: string, id?: number) => {
   const [initialValues, setInitialValues] = useState<Collection>({
@@ -35,8 +36,11 @@ const useCollectionEdit = (status: string, id?: number) => {
   const [category, setCategory] = useState<Category[]>([]);
   const [author, setAuthor] = useState<Author[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  const checkValidConnexion = LogoutContext();
+
 
   useEffect(() => {
+    checkValidConnexion
     EditorService.list().then((data) => setEditor(data));
     CategoryService.list().then((data) => setCategory(data));
     AuthorService.list().then((data) => setAuthor(data));

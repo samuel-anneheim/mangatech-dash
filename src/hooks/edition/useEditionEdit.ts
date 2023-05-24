@@ -4,6 +4,7 @@ import EditionService from "../../api/services/Edition.service";
 import Edition from "../../schema/edition.type";
 import Collection from "../../schema/collection.type";
 import CollectionService from "../../api/services/Collection.Service";
+import LogoutContext from "../../context/LogoutContext";
 
 const useEditionEdit = (status: string, id?: number) => {
   const [initialValues, setInitialValues] = useState<Edition>({
@@ -15,9 +16,11 @@ const useEditionEdit = (status: string, id?: number) => {
   const [title, setTitle] = useState<string>("VIEW EDITION");
   const [subtitle, setSubtitle] = useState<string>("View edition details");
   const [collections, setCollections] = useState<Collection[]>([]);
+  const checkValidConnexion = LogoutContext();
 
 
   useEffect(() => {
+    checkValidConnexion
     CollectionService.list().then((data) => setCollections(data));  
     if (status === "create") {
       setAlertErrorText("Edition creation failed");

@@ -54,6 +54,11 @@ class FunctionHelper {
         initialValue.logo !== image
       ) {
         res.logo = image === "#" ? null : image;
+      } else if (
+        initialValue.hasOwnProperty("picture") &&
+        initialValue.picture !== image
+      ) {
+        res.picture = image === "#" ? null : image;
       }
     }
     if (Object.keys(res).length === 0) return false;

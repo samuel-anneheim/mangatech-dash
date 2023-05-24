@@ -1,32 +1,30 @@
-import Author from "../../schema/author.type";
-import Volume from "../../schema/volume.type";
+import User from "../../schema/user.type";
 import client from "../client";
 
-class VolumeService {
-  public list = async () => {
+class UserService {
+  public list = async (jwt: string) => {
     return await client
-      .get(`/volume/allData`)
+      .get(`/user`, { headers: { Authorization: `Bearer ${jwt}` } })
       .then((response) => {
-        const data = response.data;
-        return data;
+        return response.data;
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  public create = async (data: Volume, jwt: string) => {
+  public create = async (data: User, jwt: string) => {
     return await client
-      .post(`/volume`, data, { headers: { Authorization: `Bearer ${jwt}` } })
+      .post(`/user`, data, { headers: { Authorization: `Bearer ${jwt}` } })
       .catch((error) => {
         console.log(error);
         return false;
       });
   };
 
-  public update = async (id: number, data: Volume, jwt: string) => {
+  public update = async (id: number, data: User, jwt: string) => {
     return await client
-      .patch(`/volume/${id}`, data, {
+      .patch(`/user/${id}`, data, {
         headers: { Authorization: `Bearer ${jwt}` },
       })
       .catch((error) => {
@@ -35,9 +33,9 @@ class VolumeService {
       });
   };
 
-  public getOne = async (id: number) => {
+  public getOne = async (id: number, jwt: string) => {
     return await client
-      .get(`/volume/${id}/allRelations`)
+      .get(`/user/${id}`, { headers: { Authorization: `Bearer ${jwt}` } })
       .then((response) => {
         return response.data;
       })
@@ -48,7 +46,7 @@ class VolumeService {
 
   public delete = async (id: number, jwt: string) => {
     return await client
-      .delete(`/volume/${id}`, { headers: { Authorization: `Bearer ${jwt}` } })
+      .delete(`/user/${id}`, { headers: { Authorization: `Bearer ${jwt}` } })
       .catch((error) => {
         console.log(error);
         return false;
@@ -56,4 +54,4 @@ class VolumeService {
   };
 }
 
-export default new VolumeService();
+export default new UserService();

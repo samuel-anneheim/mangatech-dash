@@ -1,50 +1,49 @@
 import { GridColDef } from "@mui/x-data-grid";
-import { useContext, useState } from "react";
-
 import ActionsBlock from "../../components/ActionsBlock";
 import ListView from "../../components/ListView";
-import Author from "../../schema/author.type";
-import useAuthorList from "../../hooks/author/useAuthorList";
-import { Box } from "@mui/material";
+import { Box } from "@mui/system";
+import { useContext, useState } from "react";
 import DeleteAlert from "../../components/alert/DeleteAlert";
 import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
-import AuthorService from "../../api/services/Author.service";
+import UserService from "../../api/services/User.service";
+import User from "../../schema/user.type";
+import useUserList from "../../hooks/user/useUserList";
 import { AuthContext } from "../../context/AuthContext";
 
-const AuthorList = () => {
-  const { data, loadData, setData } = useAuthorList();
+const   UserList = () => {
+  const { data, loadData, setData } = useUserList();
   const [alertWarn, setAlertWarn] = useState(false);
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
-  const [nameDelete, setNameDelete] = useState("");
+  const [emailDelete, setEmailDelete] = useState("");
   const {accessToken} = useContext(AuthContext);
 
-  const handleDelete = async() => {
-    const newAuthors = data.filter((author: Author) => author.id !== idDelete);
-    await AuthorService.delete(idDelete, accessToken ? accessToken : '');
+  const handleDelete = async () => {
+    const newUser = data.filter((user: User) => user.id !== idDelete);
+    await UserService.delete(idDelete, accessToken ? accessToken : '');
     setSuccessDelete(true);
-    setData(newAuthors);
+    setData(newUser);
     setTimeout(() => {
       setSuccessDelete(false);
     }, 15000); //15sec
   };
 
-  const TagsDatagrid: GridColDef<Author>[] = [
+  const UserDatagrid: GridColDef<User>[] = [
     { field: "id", headerName: "ID" },
     {
-      field: "name",
-      headerName: "Name",
+      field: "email",
+      headerName: "Email",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "surname",
-      headerName: "Surname",
+      field: "role",
+      headerName: "Role",
       flex: 1,
     },
     {
-      field: "dateOfBirth",
-      headerName: "Date of birth",
+      field: "countVolume",
+      headerName: "Count Volume",
       flex: 1,
     },
     {
@@ -56,9 +55,9 @@ const AuthorList = () => {
           <ActionsBlock
             id={row.id}
             name={row.name}
-            route="author"
+            route="user"
             setAlert={setAlertWarn}
-            setNameDelete={setNameDelete}
+            setNameDelete={setEmailDelete}
             setIdDelete={setIdDelete}
           />
         );
@@ -69,16 +68,16 @@ const AuthorList = () => {
   return (
     <Box>
       <DeleteAlert
-        collectionName="author"
+        collectionName="user"
         alertWarn={alertWarn}
         setAlertWarn={setAlertWarn}
-        nameDelete={nameDelete}
+        nameDelete={emailDelete}
         idDelete={idDelete}
         handleDelete={handleDelete}
       />
-      <DeleteAlertSuccess
-        collectionName="author"
-        name={nameDelete}
+      <DeleteAlertSuccess 
+        collectionName="user"
+        name={emailDelete}
         id={idDelete}
         alert={successDelete}
         setAlert={setSuccessDelete}
@@ -86,13 +85,13 @@ const AuthorList = () => {
       <ListView
         data={data}
         loadData={loadData}
-        gridCol={TagsDatagrid}
-        title={"AUTHORS"}
-        subtitle={"List of authors"}
-        route={"author"}
+        gridCol={UserDatagrid}
+        title={"USER"}
+        subtitle={"List of users"}
+        route={"user"}
       />
     </Box>
   );
 };
 
-export default AuthorList;
+export default UserList;

@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import Author from "../../schema/author.type";
 import client from "../client";
 
@@ -25,24 +24,33 @@ class AuthorService {
       });
   };
 
-  public create = async (data: Author) => {
-    return await client.post(`/author`, data).catch((error) => {
-      console.log(error);
-      return false;
-    });
+  public create = async (data: Author, jwt: string) => {
+    return await client
+      .post(`/author`, data, { headers: { Authorization: `Bearer ${jwt}` } })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   };
 
-  public update = async (id: number, data: Author) => {
-    return await client.patch(`/author/${id}`, data).catch((error) => {
-      console.log(error);
-      return false;
-    });
+  public update = async (id: number, data: Author, jwt: string) => {
+    return await client
+      .patch(`/author/${id}`, data, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   };
 
-  public delete = async (id: number) => {
-    return await client.delete(`/author/${id}`).catch((error) => {
-      console.log(error);
-    });
+  public delete = async (id: number, jwt: string) => {
+    return await client
+      .delete(`/author/${id}`, { headers: { Authorization: `Bearer ${jwt}` } })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   };
 }
 

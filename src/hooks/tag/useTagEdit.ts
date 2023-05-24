@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TagService from "../../api/services/Tag.service";
 import Tag from "../../schema/tag.type";
+import LogoutContext from "../../context/LogoutContext";
 
 const useTagEdit = (status: string, id?: number) => {
   const [initialValues, setInitialValues] = useState<Tag>({ name: "" } as Tag);
@@ -8,8 +9,10 @@ const useTagEdit = (status: string, id?: number) => {
   const [alertErrorText, setAlertErrorText] = useState<string>("ERROR ALERT");
   const [title, setTitle] = useState<string>("VIEW TAG");
   const [subtitle, setSubtitle] = useState<string>("View tag details");
+  const checkValidConnexion = LogoutContext();
 
   useEffect(() => {
+    checkValidConnexion
     if (status === "create") {
       setAlertErrorText("Tag creation failed");
       setAlertText("Tag created");

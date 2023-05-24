@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useEditionList from "../../hooks/edition/useEditionList"
 import Edition from "../../schema/edition.type";
 import EditionService from "../../api/services/Edition.service";
@@ -8,6 +8,7 @@ import { Box } from "@mui/material";
 import DeleteAlert from "../../components/alert/DeleteAlert";
 import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
 import ListView from "../../components/ListView";
+import { AuthContext } from "../../context/AuthContext";
 
 const EditionList = () => {
   const { data, loadData, setData } = useEditionList();
@@ -15,10 +16,11 @@ const EditionList = () => {
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [nameDelete, setNameDelete] = useState("");
+  const {accessToken} = useContext(AuthContext);
 
   const handleDelete = async () => {
     const newEditions = data.filter((edition: Edition) => edition.id !== idDelete);
-    await EditionService.delete(idDelete);
+    await EditionService.delete(idDelete, accessToken ? accessToken : '');
     setSuccessDelete(true);
     setData(newEditions);
     setTimeout(() => {

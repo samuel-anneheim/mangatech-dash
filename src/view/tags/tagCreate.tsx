@@ -1,6 +1,6 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Header from "../../components/Header";
 import { TagValidation } from "../../validation/tag.validation";
 import TagService from "../../api/services/Tag.service";
@@ -8,6 +8,7 @@ import AlertCreate from "../../components/alert/AlertCreate";
 import useTagEdit from "../../hooks/tag/useTagEdit";
 import { useParams } from "react-router-dom";
 import Tag from "../../schema/tag.type";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   status: string;
@@ -17,15 +18,16 @@ const TagsCreate = ({ status }: Props) => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
   let { id } = useParams<{ id: string }>();
+  const {accessToken} = useContext(AuthContext);
   const { initialValues, alertErrorText, alertText, title, subtitle } =
     useTagEdit(status, id ? parseInt(id) : undefined);
 
   const handleFormSubmit = async (values: any, resetForm: any) => {
     status !== "edit"
-      ? (await TagService.create(values)) === false
+      ? (await TagService.create(values, accessToken ? accessToken : '')) === false
         ? setAlertError(true)
         : (resetForm({ initialValues }), setAlert(true))
-      : (await TagService.update(id ? +id : 0, values)) === false
+      : (await TagService.update(id ? +id : 0, values, accessToken ? accessToken : '')) === false
         ? setAlertError(true)
         : setAlert(true);
   };

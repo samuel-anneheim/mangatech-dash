@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CollectionService from "../../api/services/Collection.Service";
 import functionHelper from "../../utils/functionHelper";
 import AlertCreate from "../../components/alert/AlertCreate";
@@ -26,6 +26,7 @@ import SelectReady from "../../components/SelectReady";
 import { Link, useParams } from "react-router-dom";
 import useCollectionEdit from "../../hooks/collection/useCollectionEdit";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   status: string;
@@ -45,6 +46,7 @@ const MenuProps = {
 const CollectionCreate = ({ status }: Props) => {
   const [alert, setAlert] = useState<boolean>(false);
   const [alertError, setAlertError] = useState<boolean>(false);
+  const {accessToken} = useContext(AuthContext);
 
   let { id } = useParams<{ id: string }>();
   const {
@@ -69,7 +71,7 @@ const CollectionCreate = ({ status }: Props) => {
       if (values.releaseDate) {
         values.releaseDate = dayjs(values.releaseDate).format("YYYY-MM-DD");
       }
-      (await CollectionService.create(values)) === false
+      (await CollectionService.create(values, accessToken ? accessToken : '')) === false
         ? (setAlertError(true),
           (values.releaseDate = ""),
           (values.createDate = ""))
@@ -83,7 +85,7 @@ const CollectionCreate = ({ status }: Props) => {
       if (values.tagsId) {
         values.tags = values.tagsId.map((tag: Tag) => tag.id);
       }
-      (await CollectionService.update(id ? +id : 0, values)) === false
+      (await CollectionService.update(id ? +id : 0, values, accessToken ? accessToken : '')) === false
         ? setAlertError(true)
         : setAlert(true);
     }

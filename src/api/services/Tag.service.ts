@@ -24,9 +24,11 @@ class TagService {
       });
   };
 
-  public update = async (id: number, data: any) => {
+  public update = async (id: number, data: any, jwt: string) => {
     return await client
-      .patch(`/tag/${id}`, data)
+      .patch(`/tag/${id}`, data, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      })
       .then((response) => {
         return response.data;
       })
@@ -36,20 +38,21 @@ class TagService {
       });
   };
 
-  public create = async (data: Tag) => {
+  public create = async (data: Tag, jwt: string) => {
     return await client
-      .post(`/tag`, data)
+      .post(`/tag`, data, { headers: { Authorization: `Bearer ${jwt}` } })
       .catch((error) => {
         console.log(error);
         return false;
       });
   };
 
-  public delete = async (id: number) => {
+  public delete = async (id: number, jwt: string) => {
     return await client
-      .delete(`/tag/${id}`)
+      .delete(`/tag/${id}`, { headers: { Authorization: `Bearer ${jwt}` } })
       .catch((error) => {
         console.log(error);
+        return false;
       });
   };
 }

@@ -19,12 +19,16 @@ class EditionService {
     });
   };
 
-  public update = async (id: number, data: Edition ) => {
-    return await client.patch(`/edition/${id}`, data).catch((error) => {
-      console.log(error);
-      return false;
-    });
-  }
+  public update = async (id: number, data: Edition, jwt: string) => {
+    return await client
+      .patch(`/edition/${id}`, data, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
+  };
 
   public getOne = async (id: number) => {
     return await client
@@ -48,17 +52,22 @@ class EditionService {
       });
   };
 
-  public create = async (data: Edition) => {
-    return await client.post(`/edition`, data).catch((error) => {
-      console.log(error);
-      return false;
-    });
+  public create = async (data: Edition, jwt: string) => {
+    return await client
+      .post(`/edition`, data, { headers: { Authorization: `Bearer ${jwt}` } })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   };
 
-  public delete = async (id: number) => {
-    return await client.delete(`/edition/${id}`).catch((error) => {
-      console.log(error);
-    });
+  public delete = async (id: number, jwt: string) => {
+    return await client
+      .delete(`/edition/${id}`, { headers: { Authorization: `Bearer ${jwt}` } })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   };
 }
 

@@ -7,22 +7,32 @@ import DarkModeOutlineIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlineIcon from "@mui/icons-material/NotificationsOutlined";
 import SettingsOutlineIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
+import LogoutIcon from '@mui/icons-material/Logout';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 import { useProSidebar } from "react-pro-sidebar";
+import AuthService from "../../api/services/Auth.service";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const Topbar = () => {
   const theme = useTheme();
+  const navigate = useNavigate()
+  const {setAuthenticated} = useContext(AuthContext)
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const { toggleSidebar, broken } = useProSidebar();
 
+  const handleLogout = () => {
+    setAuthenticated(false);
+    navigate("/login");
+    localStorage.clear();
+  };
+
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
-      {/* @TODO : SEARCH BAR */}
       <Box display="flex">
-        {/* {broken && (
+        {broken && (
           <IconButton
             sx={{ margin: "0 6 0 2" }}
             onClick={() => toggleSidebar()}
@@ -30,16 +40,6 @@ const Topbar = () => {
             <MenuOutlinedIcon />
           </IconButton>
         )}
-      <Box
-        display="flex"
-        bgcolor={colors.primary[400]}
-        borderRadius="3px"
-      >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="search" />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
-        </Box> */}
       </Box>
 
       {/* ICONS */}
@@ -51,14 +51,8 @@ const Topbar = () => {
             <DarkModeOutlineIcon />
           )}
         </IconButton>
-        <IconButton>
-          <NotificationsOutlineIcon />
-        </IconButton>
-        <IconButton>
-          <SettingsOutlineIcon />
-        </IconButton>
-        <IconButton>
-          <PersonOutlineIcon />
+        <IconButton onClick={handleLogout}>
+          <LogoutIcon />
         </IconButton>
       </Box>
     </Box>

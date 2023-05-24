@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import functionHelper from "../../utils/functionHelper";
 import Category from "../../schema/category.type";
 import CategoryService from "../../api/services/Category.service";
+import LogoutContext from "../../context/LogoutContext";
 
 const useCategoryEdit = (status: string, id?: number) => {
   const [initialValues, setInitialValues] = useState<Category>({
@@ -14,8 +15,10 @@ const useCategoryEdit = (status: string, id?: number) => {
   const [title, setTitle] = useState<string>("VIEW CATEGORY");
   const [subtitle, setSubtitle] = useState<string>("View category details");
   const [image, setImage] = useState<string>("#");
+  const checkValidConnexion = LogoutContext();
 
   useEffect(() => {
+    checkValidConnexion
     if (status === "create") {
       setAlertErrorText("Category creation failed");
       setAlertText("Category created");

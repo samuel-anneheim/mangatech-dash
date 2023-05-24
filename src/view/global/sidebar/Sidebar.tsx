@@ -1,5 +1,5 @@
 // docs https://github.com/azouaoui-med/react-pro-sidebar
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useContext, useState } from "react";
 import { Menu, Sidebar, MenuItem } from "react-pro-sidebar";
 import { useProSidebar } from "react-pro-sidebar";
 
@@ -20,6 +20,10 @@ import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { TagOutlined } from "@mui/icons-material";
+
+import jwt_decode from 'jwt-decode';
+import { AuthContext } from "../../../context/AuthContext";
+import Jwt from "../../../schema/jwt.type";
 
 type Props = {
   title: string;
@@ -52,6 +56,9 @@ const MyProSidebar = () => {
   const [selected, setSelected] = useState<string>("Dashboard");
   const { sidebarImage } = useSidebarContext();
   const { collapseSidebar, toggleSidebar, collapsed, broken } = useProSidebar();
+  const {accessToken} = useContext(AuthContext);
+  const jwtDecoded: Jwt = jwt_decode(accessToken ? accessToken : '');
+
   return (
     <Box
       sx={{
@@ -135,7 +142,7 @@ const MyProSidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Harun Jeylan
+                  {jwtDecoded.username.split('@')[0]}
                 </Typography>
               </Box>
             </Box>

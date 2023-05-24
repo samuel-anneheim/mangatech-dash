@@ -5,19 +5,19 @@ enum Role {
 }
 
 type User = {
-  id: number;
+  id?: number;
   name: string;
   surname: string;
   email: string;
-  password: string;
+  password?: string;
   picture: string;
-  registrationDate: Date;
-  dateOfBirth: Date;
+  registrationDate?: Date | string;
+  dateOfBirth: Date | string;
   role: Role;
-  countVolume: number;
-  countVolumeRead: number;
+  countVolume?: number;
+  countVolumeRead?: number;
   gender: string;
-  wishist: Volume[];
+  wishist?: Volume[];
 }
 
 export default User;

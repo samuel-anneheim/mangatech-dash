@@ -4,10 +4,11 @@ import ListView from "../../components/ListView";
 import Tag from "../../schema/tag.type";
 import useTagList from "../../hooks/tag/useTagList";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DeleteAlert from "../../components/alert/DeleteAlert";
 import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
 import TagService from "../../api/services/Tag.service";
+import { AuthContext } from "../../context/AuthContext";
 
 const TagList = () => {
   const { data, loadData, setData } = useTagList();
@@ -15,10 +16,12 @@ const TagList = () => {
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [nameDelete, setNameDelete] = useState("");
+  const {accessToken} = useContext(AuthContext);
+  
 
   const handleDelete = async () => {
     const newTags = data.filter((tag: Tag) => tag.id !== idDelete);
-    await TagService.delete(idDelete);
+    await TagService.delete(idDelete, accessToken ? accessToken : '');
     setSuccessDelete(true);
     setData(newTags);
     setTimeout(() => {

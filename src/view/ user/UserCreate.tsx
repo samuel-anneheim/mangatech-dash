@@ -1,28 +1,21 @@
 import { Box, Button, MenuItem, TextField } from "@mui/material";
 import { Formik } from "formik";
-import { useContext, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Header from "../../components/Header";
-import { AuthorValidation } from "../../validation/author.validation";
 import genderSelect from "../../utils/constant/genderSelect.const";
-import AuthorService from "../../api/services/Author.service";
 import AlertCreate from "../../components/alert/AlertCreate";
-import dayjs from "dayjs";
 import functionHelper from "../../utils/functionHelper";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useParams } from "react-router-dom";
-import useAuthorEdit from "../../hooks/author/useAuthorEdit";
-import { AuthContext } from "../../context/AuthContext";
+import useUserEdit from "../../hooks/user/useUserEdit";
+import { UserValidation } from "../../validation/user.validation";
+import roleSelect from "../../utils/constant/roleSelect.const";
 
 type Props = {
   status: string;
 };
 
-const AuthorCreate = ({ status }: Props) => {
-  const [alert, setAlert] = useState(false);
-  const [alertError, setAlertError] = useState(false);
-  const {accessToken} = useContext(AuthContext);
-
+const UserCreate = ({ status }: Props) => {
   let { id } = useParams<{ id: string }>();
   const {
     initialValues,
@@ -30,34 +23,18 @@ const AuthorCreate = ({ status }: Props) => {
     alertText,
     title,
     subtitle,
-    image,
-    setImage,
-  } = useAuthorEdit(status, id ? parseInt(id) : undefined);
+    picture,
+    setPicture,
+    alert,
+    setAlert,
+    alertError,
+    setAlertError,
+    handleFormSubmit,
+  } = useUserEdit(status, id ? parseInt(id) : undefined);
 
-  const handleFormSubmit = async (values: any, resetForm: any) => {
-    if (status === "create") {
-      values = functionHelper.setEmptyToUndefined(values);
-      values.image = image === "#" ? undefined : image;
-      if (values.dateOfBirth) {
-        values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
-      }
-      (await AuthorService.create(values, accessToken ? accessToken : '')) === false
-        ? setAlertError(true)
-        : (resetForm({ initialValues }), setAlert(true));
-    } else if (status === "edit") {
-      values = functionHelper.formatEditPatch(values, initialValues, image);
-      if (!values) return;
-      if (values.dateOfBirth) {
-        values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
-      }
-      (await AuthorService.update(id ? +id : 0, values, accessToken ? accessToken : '')) === false
-        ? setAlertError(true)
-        : setAlert(true);
-    }
-  };
 
   const handleUploadImage = (event: any) => {
-    functionHelper.uploadImage(event, setImage);
+    functionHelper.uploadImage(event, setPicture);
   };
 
   return (
@@ -79,8 +56,8 @@ const AuthorCreate = ({ status }: Props) => {
         onSubmit={(values, { resetForm }) => {
           handleFormSubmit(values, resetForm);
         }}
-        initialValues={initialValues}
-        validationSchema={AuthorValidation}
+        initialValues={{...initialValues}}
+        validationSchema={UserValidation}
         enableReinitialize
       >
         {({
@@ -103,7 +80,35 @@ const AuthorCreate = ({ status }: Props) => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Name*"
+                label="Email*"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.email}
+                name="email"
+                error={!!touched.email && !!errors.email}
+                helperText={touched.email && errors.email}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                disabled={status === "view"}
+                fullWidth
+                variant="filled"
+                type="password"
+                label="Password*"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                disabled={status === "view"}
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.name}
@@ -117,7 +122,7 @@ const AuthorCreate = ({ status }: Props) => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Surname*"
+                label="Surname"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.surname}
@@ -140,36 +145,22 @@ const AuthorCreate = ({ status }: Props) => {
                     variant="contained"
                     component="span"
                   >
-                    Upload image
+                    Upload picture
                   </Button>
                 </label>
               )}
-              {image !== "#" && (
+              {picture !== "#" && (
                 <Box
                   display="flex"
                   justifyContent="center"
                   sx={{ gridColumn: "span 4" }}
                 >
                   {status !== "view" && (
-                    <CancelOutlinedIcon onClick={() => setImage("#")} />
+                    <CancelOutlinedIcon onClick={() => setPicture("#")} />
                   )}
-                  <img src={image} alt="preview" width="auto" height="200px" />
+                  <img src={picture} alt="preview" width="auto" height="200px" />
                 </Box>
               )}
-              <TextField
-                disabled={status === "view"}
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Biography"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.biography}
-                name="biography"
-                error={!!touched.biography && !!errors.biography}
-                helperText={touched.biography && errors.biography}
-                sx={{ gridColumn: "span 4" }}
-              />
               <TextField
                 disabled={status === "view"}
                 fullWidth
@@ -186,6 +177,27 @@ const AuthorCreate = ({ status }: Props) => {
                 sx={{ gridColumn: "span 2" }}
               >
                 {genderSelect.map((e) => (
+                  <MenuItem key={e.value} value={e.value}>
+                    {e.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                disabled={status === "view"}
+                fullWidth
+                select
+                variant="filled"
+                type="text"
+                label="Role*"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.role}
+                name="role"
+                error={!!touched.role && !!errors.role}
+                helperText={touched.role && errors.role}
+                sx={{ gridColumn: "span 2" }}
+              >
+                {roleSelect.map((e) => (
                   <MenuItem key={e.value} value={e.value}>
                     {e.label}
                   </MenuItem>
@@ -224,4 +236,4 @@ const AuthorCreate = ({ status }: Props) => {
   );
 };
 
-export default AuthorCreate;
+export default UserCreate;

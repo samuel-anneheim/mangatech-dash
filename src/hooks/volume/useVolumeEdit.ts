@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import functionHelper from "../../utils/functionHelper";
 import EditionService from "../../api/services/Edition.service";
 import Edition from "../../schema/edition.type";
@@ -7,6 +7,8 @@ import CollectionService from "../../api/services/Collection.Service";
 import Volume from "../../schema/volume.type";
 import VolumeService from "../../api/services/Volume.Service";
 import dayjs from "dayjs";
+import LogoutContext from "../../context/LogoutContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const useVolumeEdit = (status: string, id?: number) => {
   const [initialValues, setInitialValues] = useState<Volume>({
@@ -31,8 +33,12 @@ const useVolumeEdit = (status: string, id?: number) => {
   const [editionId, setEditionId] = useState<number>(0);
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
+  const checkValidConnexion = LogoutContext();
+  const {accessToken} = useContext(AuthContext);
+
   
   useEffect(() => {
+    checkValidConnexion;
     CollectionService.list().then((data) => setCollection(data));
     if (status === "create") {
       setAlertErrorText("Volume creation failed");
@@ -85,7 +91,7 @@ const useVolumeEdit = (status: string, id?: number) => {
       if (values.releaseDate) {
         values.releaseDate = dayjs(values.releaseDate).format("YYYY-MM-DD");
       }
-      (await VolumeService.create(values)) === false
+      (await VolumeService.create(values, accessToken ? accessToken : '')) === false
         ? setAlertError(true)
         : (resetForm({ initialValues }), setAlert(true));
     } else if(status === "edit") {  
@@ -95,7 +101,7 @@ const useVolumeEdit = (status: string, id?: number) => {
       if (values.releaseDate) {
         values.releaseDate = dayjs(values.releaseDate).format("YYYY-MM-DD");
       }
-      (await VolumeService.update(id ? +id : 0, values)) === false
+      (await VolumeService.update(id ? +id : 0, values, accessToken ? accessToken : '')) === false
         ? setAlertError(true)
         : setAlert(true);
     }

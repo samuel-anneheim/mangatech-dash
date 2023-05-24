@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import CategoryService from "../../api/services/Category.service";
 import { Formik } from "formik";
 import Header from "../../components/Header";
@@ -9,6 +9,7 @@ import functionHelper from "../../utils/functionHelper";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import useCategoryEdit from "../../hooks/category/useCategoryEdit";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   status: string;
@@ -17,6 +18,7 @@ type Props = {
 const CategoryCreate = ({ status }: Props) => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
+  const {accessToken} = useContext(AuthContext);
 
   let { id } = useParams<{ id: string }>();
   const {
@@ -33,13 +35,13 @@ const CategoryCreate = ({ status }: Props) => {
     if (status === "create"){
       values = functionHelper.setEmptyToUndefined(values);
       values.image = image === "#" ? undefined : image;
-      (await CategoryService.create(values)) === false
+      (await CategoryService.create(values, accessToken ? accessToken : '')) === false
         ? setAlertError(true)
         : (resetForm({ initialValues }), setAlert(true));
     } else if (status === "edit") {
       values = functionHelper.formatEditPatch(values, initialValues, image);
       if (!values) return;
-      (await CategoryService.update(id ? +id : 0, values)) === false
+      (await CategoryService.update(id ? +id : 0, values, accessToken ? accessToken : '')) === false
         ? setAlertError(true)
         : setAlert(true);
     }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import functionHelper from "../../utils/functionHelper";
 import Author from "../../schema/author.type";
 import AuthorService from "../../api/services/Author.service";
+import LogoutContext from "../../context/LogoutContext";
 
 const useAuthorEdit = (status: string, id?: number) => {
   const [initialValues, setInitialValues] = useState<Author>({
@@ -17,8 +18,10 @@ const useAuthorEdit = (status: string, id?: number) => {
   const [title, setTitle] = useState<string>("VIEW AUTHOR");
   const [subtitle, setSubtitle] = useState<string>("View author details");
   const [image, setImage] = useState<string>("#");
+  const checkValidConnexion = LogoutContext();
 
   useEffect(() => {
+    checkValidConnexion
     if (status === "create") {
       setAlertErrorText("Author creation failed");
       setAlertText("Author created");

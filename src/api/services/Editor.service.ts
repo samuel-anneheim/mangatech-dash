@@ -24,24 +24,33 @@ class EditorService {
       });
   };
 
-  public create = async (data: Editor) => {
-    return await client.post(`/editor`, data).catch((error) => {
-      console.log(error);
-      return false;
-    });
+  public create = async (data: Editor, jwt: string) => {
+    return await client
+      .post(`/editor`, data, { headers: { Authorization: `Bearer ${jwt}` } })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   };
 
-  public delete = async (id: number) => {
-    return await client.delete(`/editor/${id}`).catch((error) => {
-      console.log(error);
-    });
+  public delete = async (id: number, jwt: string) => {
+    return await client
+      .delete(`/editor/${id}`, { headers: { Authorization: `Bearer ${jwt}` } })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   };
 
-  public update = async (id: number, data: Editor) => {
-    return await client.patch(`/editor/${id}`, data).catch((error) => {
-      console.log(error);
-      return false;
-    });
+  public update = async (id: number, data: Editor, jwt: string) => {
+    return await client
+      .patch(`/editor/${id}`, data, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   };
 }
 

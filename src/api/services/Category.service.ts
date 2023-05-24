@@ -25,26 +25,35 @@ class CategoryService {
       });
   };
 
-  public create = async (data: Category) => {
+  public create = async (data: Category, jwt: string) => {
     return await client
-      .post(`/category`, data)
+      .post(`/category`, data, { headers: { Authorization: `Bearer ${jwt}` } })
       .catch((error) => {
         console.log(error);
         return false;
       });
-  }
-
-  public update = async (id: number, data: Category) => {
-    return await client.patch(`/category/${id}`, data).catch((error) => {
-      console.log(error);
-      return false;
-    });
   };
 
-  public delete = async (id: number) => {
-    return await client.delete(`/category/${id}`).catch((error) => {
-      console.log(error);
-    });
+  public update = async (id: number, data: Category, jwt: string) => {
+    return await client
+      .patch(`/category/${id}`, data, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
+  };
+
+  public delete = async (id: number, jwt: string) => {
+    return await client
+      .delete(`/category/${id}`, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   };
 }
 

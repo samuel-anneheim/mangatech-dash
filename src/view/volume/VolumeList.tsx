@@ -2,13 +2,14 @@ import { GridColDef } from "@mui/x-data-grid";
 import ActionsBlock from "../../components/ActionsBlock";
 import ListView from "../../components/ListView";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DeleteAlert from "../../components/alert/DeleteAlert";
 import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
 import VolumeService from "../../api/services/Volume.Service";
 import useVolumeList from "../../hooks/volume/useVolumeList";
 import Volume from "../../schema/volume.type";
 import LinkViewList from "../../components/LinkViewList";
+import { AuthContext } from "../../context/AuthContext";
 
 const   VolumeList = () => {
   const { data, loadData, setData } = useVolumeList();
@@ -16,10 +17,11 @@ const   VolumeList = () => {
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [nameDelete, setNameDelete] = useState("");
+  const {accessToken} = useContext(AuthContext);
 
   const handleDelete = async () => {
     const newVolume = data.filter((tag: Volume) => tag.id !== idDelete);
-    await VolumeService.delete(idDelete);
+    await VolumeService.delete(idDelete, accessToken ? accessToken : '');
     setSuccessDelete(true);
     setData(newVolume);
     setTimeout(() => {

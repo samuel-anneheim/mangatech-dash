@@ -12,6 +12,8 @@ import EditionValidation from "../../validation/edition.validation";
 import SelectReady from "../../components/SelectReady";
 import { useParams } from "react-router-dom";
 import useEditionEdit from "../../hooks/edition/useEditionEdit";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   status: string;
@@ -20,6 +22,8 @@ type Props = {
 const EditionCreate = ({status}: Props) => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState<boolean>(false);
+  const {accessToken} = useContext(AuthContext)
+
 
   let { id } = useParams<{ id: string }>();
   const {
@@ -34,13 +38,13 @@ const EditionCreate = ({status}: Props) => {
   const handleFormSubmit = async (values: any, resetForm: any) => {
     if (status === "create") {
       values = functionHelper.setEmptyToUndefined(values);
-      (await EditionService.create(values)) === false
+      (await EditionService.create(values, accessToken ? accessToken: '')) === false
         ? setAlertError(true)
         : (resetForm({ initialValues }), setAlert(true))
     } else if (status === "edit") {
       values = functionHelper.formatEditPatch(values, initialValues);
       if (!values) return;
-      (await EditionService.update(id ? +id : 0, values)) === false
+      (await EditionService.update(id ? +id : 0, values,  accessToken ? accessToken: '')) === false
         ? setAlertError(true)
         : setAlert(true);
     }

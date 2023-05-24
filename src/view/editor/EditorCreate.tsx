@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import functionHelper from "../../utils/functionHelper";
 import EditorService from "../../api/services/Editor.service";
 import { Box, Button, TextField } from "@mui/material";
@@ -9,6 +9,7 @@ import EditorValidation from "../../validation/editor.validation";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useParams } from "react-router-dom";
 import useEditorEdit from "../../hooks/editor/useEditorEdit";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   status: string;
@@ -17,6 +18,7 @@ type Props = {
 const EditorCreate = ({ status }: Props) => {
   const [alert, setAlert] = useState(false);
   const [alertError, setAlertError] = useState(false);
+  const {accessToken} = useContext(AuthContext);
 
   let { id } = useParams<{ id: string }>();
   const {
@@ -33,13 +35,13 @@ const EditorCreate = ({ status }: Props) => {
     if (status === "create") {
       values = functionHelper.setEmptyToUndefined(values);
       values.logo = logo === "#" ? undefined : logo;
-      (await EditorService.create(values)) === false
+      (await EditorService.create(values, accessToken ? accessToken : '')) === false
         ? setAlertError(true)
         : (resetForm({ initialValues }), setAlert(true), setLogo("#"));
     } else if (status === "edit") {
       values = functionHelper.formatEditPatch(values, initialValues, logo);
       if (!values) return;
-      (await EditorService.update(id ? +id : 0, values)) === false
+      (await EditorService.update(id ? +id : 0, values, accessToken ? accessToken : '')) === false
         ? setAlertError(true)
         : setAlert(true);
     }
