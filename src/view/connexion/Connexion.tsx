@@ -1,98 +1,136 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AuthService from '../../api/services/Auth.service';
-import { AuthContext } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import AuthService from "../../api/services/Auth.service";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import AlertCreate from "../../components/alert/AlertCreate";
+import { Formik } from "formik";
+import { ConnexionValidation } from "../../validation/Connexion.validation";
 
 // TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
+const initialValues = {
+  email: "",
+  password: "",
+};
 
-export default function Connexion() {
+const Connexion = () => {
+  const { authenticated, setAuthenticated, setAccessToken } =
+    useContext(AuthContext);
+  const [alertError, setAlertError] = useState(false);
+  const navigate = useNavigate();
 
-  const {authenticated, setAuthenticated, setAccessToken} = React.useContext(AuthContext)
-  const navigate = useNavigate()
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (authenticated) {
       navigate("/");
     }
   }, [authenticated, navigate]);
-  
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    AuthService.login(data.get('email') as string, data.get('password') as string).then((response) => {
+
+  const handleFormSubmit = (value: any) => {
+    AuthService.login(value.email, value.password)
+      .then((response) => {
         if (response) {
           setAuthenticated(true);
           setAccessToken(response.access_token);
           localStorage.setItem("access_token", response.access_token);
-          localStorage.setItem("logged", 'true');
+          localStorage.setItem("logged", "true");
           navigate("/");
+        } else {
+          setAlertError(true);
         }
-    }).catch((error) => {
+      })
+      .catch((error) => {
         console.log(error);
-    });
+      });
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "space-around",
+        justifyContent: "space-around",
+        height: "100vh",
+      }}
+    >
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-          </Box>
+        <AlertCreate
+          alert={alertError}
+          setAlert={setAlertError}
+          text={"Email/mot de passe incorrect ou non autorisé"}
+          severity="error"
+        />
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <img
+            className="avater-image"
+            alt="profile user"
+            width="200px"
+            height="200px"
+            src={"../../assets/logo.png"}
+            style={{ cursor: "pointer", borderRadius: "50%" }}
+          />
         </Box>
+        <Formik
+          onSubmit={(values, { resetForm }) => {
+            handleFormSubmit(values);
+          }}
+          initialValues={initialValues}
+          validationSchema={ConnexionValidation}
+          enableReinitialize
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+          }) => (
+            <form onSubmit={handleSubmit}>
+              <Box
+                display="grid"
+                gap="30px"
+                gridTemplateColumns="repeat(4, minmax(0, 1fr)"
+              >
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="email"
+                  label="Email*"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.email}
+                  name="email"
+                  error={!!touched.email && !!errors.email}
+                  helperText={touched.email && errors.email}
+                />
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="password"
+                  label="Password*"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.password}
+                  name="password"
+                  error={!!touched.password && !!errors.password}
+                  helperText={touched.password && errors.password}
+                />
+              </Box>
+              <Box display="flex" justifyContent="center" mt="20px">
+                <Button type="submit" color="secondary" variant="contained">
+                  SIGN IN
+                </Button>
+              </Box>
+            </form>
+          )}
+        </Formik>
       </Container>
-    </ThemeProvider>
+    </Box>
   );
-}
+};
+
+export default Connexion;

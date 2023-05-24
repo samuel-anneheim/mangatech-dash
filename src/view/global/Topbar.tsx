@@ -4,14 +4,10 @@ import { ColorModeContext, tokens } from "../../theme";
 
 import LigthModeOutlineIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlineIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlineIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlineIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 import { useProSidebar } from "react-pro-sidebar";
-import AuthService from "../../api/services/Auth.service";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -42,7 +38,6 @@ const Topbar = () => {
         )}
       </Box>
 
-      {/* ICONS */}
       <Box display="flex">
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
