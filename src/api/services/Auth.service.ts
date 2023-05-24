@@ -8,7 +8,6 @@ class AuthService {
     return await client
       .post(`/login`, { username, password })
       .then((response) => {
-        console.log(response.data);
         const decodedJwt: Jwt = jwt_decode(response.data.access_token);
         if (decodedJwt.roles === 'user') {
           return false;

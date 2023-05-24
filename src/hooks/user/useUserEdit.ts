@@ -58,7 +58,6 @@ const useUserEdit = (status: string, id?: number) => {
       if (values.dateOfBirth) {
         values.dateOfBirth = dayjs(values.dateOfBirth).format("YYYY-MM-DD");
       }
-      console.log(values);
       (await UserService.create(values, accessToken ? accessToken : '')) === false
         ? (setAlertError(true),
           setInitialValues({
