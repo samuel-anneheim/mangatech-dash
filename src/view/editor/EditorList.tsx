@@ -88,7 +88,7 @@ const EditorList = () => {
         loadData={loadData}
         subtitle="List of editors"
         route="editor"
-        title="Editors"
+        title="EDITOR"
       />
     </Box>
   );

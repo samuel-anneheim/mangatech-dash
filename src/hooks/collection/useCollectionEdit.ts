@@ -55,7 +55,7 @@ const useCollectionEdit = (status: string, id?: number) => {
       if (id) {
         CollectionService.getOne(id).then((res) => {
           setInitialValues({...functionHelper.formatEdtiForm(res), tagsId: res.tags?.map((tag: Tag) => tag.id)});
-
+          console.log(res);
           res.image && setImage(res.image);
         });
       }

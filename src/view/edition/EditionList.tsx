@@ -86,7 +86,7 @@ const EditionList = () => {
         loadData={loadData}
         subtitle="List of editions"
         route="edition"
-        title="Edition"
+        title="EDITION"
       />
     </Box>
   );

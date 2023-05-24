@@ -97,7 +97,7 @@ const CollectionList = () => {
         loadData={loadData}
         subtitle="List of collections"
         route="collection"
-        title="Collection"
+        title="COLLECTION"
       />
     </Box>
   );

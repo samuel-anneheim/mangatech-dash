@@ -1,4 +1,3 @@
-import Author from "../../schema/author.type";
 import Volume from "../../schema/volume.type";
 import client from "../client";
 

@@ -85,7 +85,7 @@ const CategoryList = () => {
         loadData={loadData}
         subtitle = "List of categories"
         route="category"
-        title="Categories"
+        title="CATEGORY"
       />
     </Box>
    );

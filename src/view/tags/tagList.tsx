@@ -82,7 +82,7 @@ const TagList = () => {
         data={data}
         loadData={loadData}
         gridCol={TagsDatagrid}
-        title={"TAGS"}
+        title={"TAG"}
         subtitle={"List of tags"}
         route={"tag"}
       />

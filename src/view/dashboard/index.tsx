@@ -7,6 +7,16 @@ const Dashboard = () => {
       <Box display="flex" justifyContent="space-between">
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
       </Box>
+      <Box display="flex" justifyContent="center" alignItems="center" mt={5}>
+          <img
+            className="avater-image"
+            alt="profile user"
+            width="500px"
+            height="500px"
+            src={"../../assets/logo.png"}
+            style={{ cursor: "pointer", borderRadius: "50%" }}
+          />
+        </Box>
     </Box>
   );
 };

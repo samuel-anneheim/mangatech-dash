@@ -107,7 +107,7 @@ const   VolumeList = () => {
         data={data}
         loadData={loadData}
         gridCol={VolumeDatagrid}
-        title={"VOLUMES"}
+        title={"VOLUME"}
         subtitle={"List of volumes"}
         route={"volume"}
       />

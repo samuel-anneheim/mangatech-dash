@@ -87,7 +87,7 @@ const AuthorList = () => {
         data={data}
         loadData={loadData}
         gridCol={TagsDatagrid}
-        title={"AUTHORS"}
+        title={"AUTHOR"}
         subtitle={"List of authors"}
         route={"author"}
       />
