@@ -15,9 +15,9 @@ class FunctionHelper {
     return obj;
   };
 
-  public uploadImage = (event: any, setLogo: any) => {
+  public uploadImage = (event: any, setLogo: any, jwt: string) => {
     if (!event.target.files[0]) return;
-    ImageService.create(event.target.files[0]).then((res) => {
+    ImageService.create(event.target.files[0], jwt).then((res) => {
       setLogo(`http://localhost:8888/image/${res.filename}`);
     });
   };

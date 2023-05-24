@@ -10,6 +10,8 @@ import { useParams } from "react-router-dom";
 import useUserEdit from "../../hooks/user/useUserEdit";
 import { UserValidation } from "../../validation/user.validation";
 import roleSelect from "../../utils/constant/roleSelect.const";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 
 type Props = {
   status: string;
@@ -32,9 +34,12 @@ const UserCreate = ({ status }: Props) => {
     handleFormSubmit,
   } = useUserEdit(status, id ? parseInt(id) : undefined);
 
+  const {accessToken} = useContext(AuthContext);
+
+
 
   const handleUploadImage = (event: any) => {
-    functionHelper.uploadImage(event, setPicture);
+    functionHelper.uploadImage(event, setPicture, accessToken ? accessToken : '');
   };
 
   return (

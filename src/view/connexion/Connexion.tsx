@@ -106,6 +106,7 @@ const Connexion = () => {
                   name="email"
                   error={!!touched.email && !!errors.email}
                   helperText={touched.email && errors.email}
+                  autoComplete="username"
                 />
                 <TextField
                   fullWidth
@@ -118,6 +119,7 @@ const Connexion = () => {
                   name="password"
                   error={!!touched.password && !!errors.password}
                   helperText={touched.password && errors.password}
+                  autoComplete="current-password"
                 />
               </Box>
               <Box display="flex" justifyContent="center" mt="20px">

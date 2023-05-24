@@ -48,7 +48,7 @@ const EditorCreate = ({ status }: Props) => {
   };
 
   const handleUploadLogo = (event: any) => {
-    functionHelper.uploadImage(event, setLogo);
+    functionHelper.uploadImage(event, setLogo, accessToken ? accessToken : '');
   };
 
   return (

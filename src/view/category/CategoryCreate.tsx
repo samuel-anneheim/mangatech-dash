@@ -48,7 +48,7 @@ const CategoryCreate = ({ status }: Props) => {
   };
 
   const handleUploadImage = (event: any) => {
-    functionHelper.uploadImage(event, setImage);
+    functionHelper.uploadImage(event, setImage, accessToken ? accessToken : '');
   };
 
   return (

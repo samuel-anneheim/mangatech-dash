@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import functionHelper from "../../utils/functionHelper";
 import dayjs from "dayjs";
 import VolumeService from "../../api/services/Volume.Service";
@@ -25,6 +25,7 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Collection from "../../schema/collection.type";
 import Edition from "../../schema/edition.type";
 import useVolumeEdit from "../../hooks/volume/useVolumeEdit";
+import { AuthContext } from "../../context/AuthContext";
 
 type Props = {
   status: string;
@@ -52,9 +53,10 @@ const VolumeCreate = ({ status }: Props) => {
     setAlertError,
     handleFormSubmit,
   } = useVolumeEdit(status, id ? parseInt(id) : undefined);
+  const {accessToken} = useContext(AuthContext);
 
   const handleUploadImage = (event: any) => {
-    functionHelper.uploadImage(event, setImage);
+    functionHelper.uploadImage(event, setImage, accessToken ? accessToken : '');
   };
 
   return (
