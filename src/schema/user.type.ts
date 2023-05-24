@@ -17,7 +17,7 @@ type User = {
   countVolume?: number;
   countVolumeRead?: number;
   gender: string;
-  wishist?: Volume[];
+  wishList?: Volume[];
 }
 
 export default User;
