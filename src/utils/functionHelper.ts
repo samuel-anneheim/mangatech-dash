@@ -18,7 +18,7 @@ class FunctionHelper {
   public uploadImage = (event: any, setLogo: any, jwt: string) => {
     if (!event.target.files[0]) return;
     ImageService.create(event.target.files[0], jwt).then((res) => {
-      setLogo(`http://localhost:8888/image/${res.filename}`);
+      setLogo(`${import.meta.env.VITE_API_URL}image/${res.filename}`);
     });
   };
 
@@ -34,8 +34,9 @@ class FunctionHelper {
         
         if (element !== initialValue[key]) {
           if (key === "dateOfBirth" && element) {
-            this.dateOfBirthCompare(element, initialValue) ??
-              (res[key] = element);
+            if(this.dateOfBirthCompare(element, initialValue)){
+              res[key] = this.dateOfBirthCompare(element, initialValue);
+            }
           } else {
             res[key] = !element ? null : element;
           }
@@ -69,7 +70,7 @@ class FunctionHelper {
     const newDate = dayjs(date).format("YYYY-MM-DD");
     const oldDate = dayjs(initialValue).format("YYYY-MM-DD");
     if (newDate !== oldDate) {
-      return date;
+      return newDate;
     }
     return false;
   };

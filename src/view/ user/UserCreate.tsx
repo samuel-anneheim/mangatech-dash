@@ -230,7 +230,7 @@ const UserCreate = ({ status }: Props) => {
             {status !== "view" && (
               <Box display="flex" justifyContent="end" mt="20px">
                 <Button type="submit" color="secondary" variant="contained">
-                  {status === "edit" ? "Update" : "create new"} author
+                  {status === "edit" ? "Update" : "create new"} user
                 </Button>
               </Box>
             )}
