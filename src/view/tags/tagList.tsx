@@ -9,6 +9,7 @@ import DeleteAlert from "../../components/alert/DeleteAlert";
 import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
 import TagService from "../../api/services/Tag.service";
 import { AuthContext } from "../../context/AuthContext";
+import AlertCreate from "../../components/alert/AlertCreate";
 
 const TagList = () => {
   const { data, loadData, setData } = useTagList();
@@ -16,17 +17,19 @@ const TagList = () => {
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [nameDelete, setNameDelete] = useState("");
-  const {accessToken} = useContext(AuthContext);
-  
+  const [alertError, setAlertError] = useState(false);
+  const { accessToken } = useContext(AuthContext);
 
   const handleDelete = async () => {
     const newTags = data.filter((tag: Tag) => tag.id !== idDelete);
-    await TagService.delete(idDelete, accessToken ? accessToken : '');
-    setSuccessDelete(true);
-    setData(newTags);
-    setTimeout(() => {
-      setSuccessDelete(false);
-    }, 15000); //15sec
+    (await TagService.delete(idDelete, accessToken ? accessToken : "")) ===
+    false
+      ? setAlertError(true)
+      : (setSuccessDelete(true),
+        setData(newTags),
+        setTimeout(() => {
+          setSuccessDelete(false);
+        }, 15000)); //15sec
   };
 
   const TagsDatagrid: GridColDef<Tag>[] = [
@@ -63,6 +66,12 @@ const TagList = () => {
 
   return (
     <Box>
+      <AlertCreate
+        alert={alertError}
+        setAlert={setAlertError}
+        text="Error: The tag is not deleted because hi have a foreign key or internal server error."
+        severity="error"
+      />
       <DeleteAlert
         collectionName="tag"
         alertWarn={alertWarn}
@@ -71,7 +80,7 @@ const TagList = () => {
         idDelete={idDelete}
         handleDelete={handleDelete}
       />
-      <DeleteAlertSuccess 
+      <DeleteAlertSuccess
         collectionName="tag"
         name={nameDelete}
         id={idDelete}

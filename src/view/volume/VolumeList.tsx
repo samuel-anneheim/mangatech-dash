@@ -10,23 +10,27 @@ import useVolumeList from "../../hooks/volume/useVolumeList";
 import Volume from "../../schema/volume.type";
 import LinkViewList from "../../components/LinkViewList";
 import { AuthContext } from "../../context/AuthContext";
+import AlertCreate from "../../components/alert/AlertCreate";
 
-const   VolumeList = () => {
+const VolumeList = () => {
   const { data, loadData, setData } = useVolumeList();
   const [alertWarn, setAlertWarn] = useState(false);
+  const [alertError, setAlertError] = useState(false);
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [nameDelete, setNameDelete] = useState("");
-  const {accessToken} = useContext(AuthContext);
+  const { accessToken } = useContext(AuthContext);
 
   const handleDelete = async () => {
     const newVolume = data.filter((tag: Volume) => tag.id !== idDelete);
-    await VolumeService.delete(idDelete, accessToken ? accessToken : '');
-    setSuccessDelete(true);
-    setData(newVolume);
-    setTimeout(() => {
-      setSuccessDelete(false);
-    }, 15000); //15sec
+    (await VolumeService.delete(idDelete, accessToken ? accessToken : "")) ===
+    false
+      ? setAlertError(true)
+      : (setSuccessDelete(true),
+        setData(newVolume),
+        setTimeout(() => {
+          setSuccessDelete(false);
+        }, 15000)); //15sec
   };
 
   const VolumeDatagrid: GridColDef<Volume>[] = [
@@ -42,25 +46,28 @@ const   VolumeList = () => {
       headerName: "Collection",
       flex: 1,
       renderCell: ({ row }: any) => {
-        return <LinkViewList 
-        id={row.edition?.collection?.id}
-        value={row.edition?.collection?.title}
-        route="collection"
-      />
-      }
+        return (
+          <LinkViewList
+            id={row.edition?.collection?.id}
+            value={row.edition?.collection?.title}
+            route="collection"
+          />
+        );
+      },
     },
     {
       field: "edition.name",
       headerName: "Edition",
       flex: 1,
       renderCell: ({ row }: any) => {
-        return <LinkViewList 
-          id={row.edition?.id}
-          value={row.edition?.name}
-          route="edition"
-        />
-;
-      }
+        return (
+          <LinkViewList
+            id={row.edition?.id}
+            value={row.edition?.name}
+            route="edition"
+          />
+        );
+      },
     },
     {
       field: "followNumber",
@@ -88,6 +95,12 @@ const   VolumeList = () => {
 
   return (
     <Box>
+      <AlertCreate
+        alert={alertError}
+        setAlert={setAlertError}
+        text="Error: The volume is not deleted because hi have a foreign key or internal server error."
+        severity="error"
+      />
       <DeleteAlert
         collectionName="volume"
         alertWarn={alertWarn}
@@ -96,7 +109,7 @@ const   VolumeList = () => {
         idDelete={idDelete}
         handleDelete={handleDelete}
       />
-      <DeleteAlertSuccess 
+      <DeleteAlertSuccess
         collectionName="volume"
         name={nameDelete}
         id={idDelete}

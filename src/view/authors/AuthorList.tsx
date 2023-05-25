@@ -10,6 +10,7 @@ import DeleteAlert from "../../components/alert/DeleteAlert";
 import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
 import AuthorService from "../../api/services/Author.service";
 import { AuthContext } from "../../context/AuthContext";
+import AlertCreate from "../../components/alert/AlertCreate";
 
 const AuthorList = () => {
   const { data, loadData, setData } = useAuthorList();
@@ -17,16 +18,18 @@ const AuthorList = () => {
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [nameDelete, setNameDelete] = useState("");
+  const [alertError, setAlertError] = useState(false);
   const {accessToken} = useContext(AuthContext);
 
   const handleDelete = async() => {
     const newAuthors = data.filter((author: Author) => author.id !== idDelete);
-    await AuthorService.delete(idDelete, accessToken ? accessToken : '');
-    setSuccessDelete(true);
-    setData(newAuthors);
+    await AuthorService.delete(idDelete, accessToken ? accessToken : '') === false
+    ? setAlertError(true)
+    :(setSuccessDelete(true),
+    setData(newAuthors),
     setTimeout(() => {
       setSuccessDelete(false);
-    }, 15000); //15sec
+    }, 15000)) //15sec
   };
 
   const TagsDatagrid: GridColDef<Author>[] = [
@@ -68,6 +71,12 @@ const AuthorList = () => {
 
   return (
     <Box>
+      <AlertCreate
+        alert={alertError}
+        setAlert={setAlertError}
+        text="Error: The author is not deleted because hi have a foreign key or internal server error."
+        severity="error"
+      />
       <DeleteAlert
         collectionName="author"
         alertWarn={alertWarn}

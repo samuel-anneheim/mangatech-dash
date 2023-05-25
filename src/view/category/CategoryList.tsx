@@ -9,25 +9,29 @@ import ListView from "../../components/ListView";
 import DeleteAlert from "../../components/alert/DeleteAlert";
 import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
 import { AuthContext } from "../../context/AuthContext";
+import AlertCreate from "../../components/alert/AlertCreate";
 
 const CategoryList = () => {
   const { data, loadData, setData } = useCategoryList();
   const [alertWarn, setAlertWarn] = useState(false);
+  const [alertError, setAlertError] = useState(false);
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [nameDelete, setNameDelete] = useState("");
-  const {accessToken} = useContext(AuthContext);
+  const { accessToken } = useContext(AuthContext);
 
   const handleDelete = async () => {
     const newCategories = data.filter(
       (category: Category) => category.id !== idDelete
     );
-    await CategoryService.delete(idDelete, accessToken ? accessToken : '');
-    setSuccessDelete(true);
-    setData(newCategories);
-    setTimeout(() => {
-      setSuccessDelete(false);
-    }, 15000); //15sec
+    (await CategoryService.delete(idDelete, accessToken ? accessToken : "")) ===
+    false
+      ? setAlertError(true)
+      : (setSuccessDelete(true),
+        setData(newCategories),
+        setTimeout(() => {
+          setSuccessDelete(false);
+        }, 15000)); //15sec
   };
 
   const CategoryDataGrid: GridColDef<Category>[] = [
@@ -62,8 +66,14 @@ const CategoryList = () => {
     },
   ];
 
-  return ( 
+  return (
     <Box>
+      <AlertCreate
+        alert={alertError}
+        setAlert={setAlertError}
+        text="Error: The category is not deleted because hi have a foreign key or internal server error."
+        severity="error"
+      />
       <DeleteAlert
         collectionName="category"
         alertWarn={alertWarn}
@@ -83,12 +93,12 @@ const CategoryList = () => {
         data={data}
         gridCol={CategoryDataGrid}
         loadData={loadData}
-        subtitle = "List of categories"
+        subtitle="List of categories"
         route="category"
         title="CATEGORY"
       />
     </Box>
-   );
+  );
 };
 
 export default CategoryList;

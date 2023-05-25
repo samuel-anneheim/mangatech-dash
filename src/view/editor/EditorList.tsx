@@ -9,23 +9,27 @@ import { Box } from "@mui/material";
 import DeleteAlert from "../../components/alert/DeleteAlert";
 import DeleteAlertSuccess from "../../components/alert/DeleteSuccessAlert";
 import { AuthContext } from "../../context/AuthContext";
+import AlertCreate from "../../components/alert/AlertCreate";
 
 const EditorList = () => {
   const { data, loadData, setData } = useEditorList();
   const [alertWarn, setAlertWarn] = useState(false);
+  const [alertError, setAlertError] = useState(false);
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [nameDelete, setNameDelete] = useState("");
-  const {accessToken} = useContext(AuthContext);
+  const { accessToken } = useContext(AuthContext);
 
   const handleDelete = async () => {
     const newEditors = data.filter((editor: Editor) => editor.id !== idDelete);
-    await EditorService.delete(idDelete, accessToken ? accessToken : '');
-    setSuccessDelete(true);
-    setData(newEditors);
-    setTimeout(() => {
-      setSuccessDelete(false);
-    }, 15000); //15sec
+    (await EditorService.delete(idDelete, accessToken ? accessToken : "")) ===
+    false
+      ? setAlertError(true)
+      : (setSuccessDelete(true),
+        setData(newEditors),
+        setTimeout(() => {
+          setSuccessDelete(false);
+        }, 15000)); //15sec
   };
 
   const EditorDataGrid: GridColDef<Editor>[] = [
@@ -67,6 +71,12 @@ const EditorList = () => {
 
   return (
     <Box>
+      <AlertCreate
+        alert={alertError}
+        setAlert={setAlertError}
+        text="Error: The editor is not deleted because hi have a foreign key or internal server error."
+        severity="error"
+      />
       <DeleteAlert
         collectionName="editor"
         alertWarn={alertWarn}

@@ -9,23 +9,27 @@ import UserService from "../../api/services/User.service";
 import User from "../../schema/user.type";
 import useUserList from "../../hooks/user/useUserList";
 import { AuthContext } from "../../context/AuthContext";
+import AlertCreate from "../../components/alert/AlertCreate";
 
-const   UserList = () => {
+const UserList = () => {
   const { data, loadData, setData } = useUserList();
   const [alertWarn, setAlertWarn] = useState(false);
   const [successDelete, setSuccessDelete] = useState(false);
   const [idDelete, setIdDelete] = useState(0);
   const [emailDelete, setEmailDelete] = useState("");
-  const {accessToken} = useContext(AuthContext);
+  const [alertError, setAlertError] = useState(false);
+  const { accessToken } = useContext(AuthContext);
 
   const handleDelete = async () => {
     const newUser = data.filter((user: User) => user.id !== idDelete);
-    await UserService.delete(idDelete, accessToken ? accessToken : '');
-    setSuccessDelete(true);
-    setData(newUser);
-    setTimeout(() => {
-      setSuccessDelete(false);
-    }, 15000); //15sec
+    (await UserService.delete(idDelete, accessToken ? accessToken : "")) ===
+    false
+      ? setAlertError(true)
+      : (setSuccessDelete(true),
+        setData(newUser),
+        setTimeout(() => {
+          setSuccessDelete(false);
+        }, 15000)); //15sec
   };
 
   const UserDatagrid: GridColDef<User>[] = [
@@ -67,6 +71,12 @@ const   UserList = () => {
 
   return (
     <Box>
+      <AlertCreate
+        alert={alertError}
+        setAlert={setAlertError}
+        text="Error: The user is not deleted because hi have a foreign key or internal server error."
+        severity="error"
+      />
       <DeleteAlert
         collectionName="user"
         alertWarn={alertWarn}
@@ -75,7 +85,7 @@ const   UserList = () => {
         idDelete={idDelete}
         handleDelete={handleDelete}
       />
-      <DeleteAlertSuccess 
+      <DeleteAlertSuccess
         collectionName="user"
         name={emailDelete}
         id={idDelete}

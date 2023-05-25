@@ -44,7 +44,7 @@ const DeleteAlert = ({
           <Box>
             <Button
               onClick={() => {
-                handleDelete(), setAlertWarn(false);
+                (setAlertWarn(false), handleDelete());
               }}
               color="secondary"
             >
