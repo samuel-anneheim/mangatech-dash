@@ -18,7 +18,7 @@ class FunctionHelper {
   public uploadImage = (event: any, setLogo: any, jwt: string) => {
     if (!event.target.files[0]) return;
     ImageService.create(event.target.files[0], jwt).then((res) => {
-      setLogo(`${import.meta.env.VITE_API_URL}image/${res.filename}`);
+      setLogo(res);
     });
   };
 
